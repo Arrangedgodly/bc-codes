@@ -1,13 +1,18 @@
 import ThemeChanger from "./ThemeChanger";
 
-const Header = () => {
+type HeaderProps = {
+  theme: string;
+  handleThemeChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+};
+
+const Header: React.FC<HeaderProps> = ({ theme, handleThemeChange }) => {
   return (
     <header className="navbar bg-neutral fixed top-0">
       <div className="navbar-start">
         <h1 className="text-2xl ml-5">Code Fanatics</h1>
       </div>
       <div className="navbar-end">
-        <ThemeChanger />
+        <ThemeChanger theme={theme} handleThemeChange={handleThemeChange} />
         <div className="avatar online m-2">
           <div className="w-12 rounded-full">
             <img src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />

@@ -3,20 +3,20 @@ export default {
   content: ["./src/**/*.{js,ts,jsx,tsx}"],
   plugins: [require("daisyui")],
   daisyui: {
-    themes: [
-      {
-        mytheme: {
-          primary: "#111827",
-          secondary: "#374151",
-          accent: "#6b7280",
-          neutral: "#d1d5db",
-          "base-100": "#f5f5f4",
-          info: "#22d3ee",
-          success: "#34d399",
-          warning: "#fde047",
-          error: "#fda4af",
-        },
-      },
-    ],
+    themes: ['nord', 'dracula'],
   },
 };
+
+/* 
+mytheme: {
+          primary: "#78716c",
+          secondary: "#44403c",
+          accent: "#292524",
+          neutral: "#d6d3d1",
+          "base-100": "#d1d5db",
+          info: "#a5f3fc",
+          success: "#bbf7d0",
+          warning: "#fef08a",
+          error: "#fecdd3",
+        } 
+*/
