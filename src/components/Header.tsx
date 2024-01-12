@@ -1,4 +1,5 @@
 import ThemeChanger from "./ThemeChanger";
+import logo from "../../public/logo.svg";
 
 type HeaderProps = {
   theme: string;
@@ -7,8 +8,11 @@ type HeaderProps = {
 
 const Header: React.FC<HeaderProps> = ({ theme, handleThemeChange }) => {
   return (
-    <header className="navbar bg-neutral fixed top-0">
+    <header className="navbar bg-neutral text-neutral-content fixed top-0">
       <div className="navbar-start">
+        <svg className="w-12 h-12 fill-rose-500">
+          {logo}
+        </svg>
         <h1 className="text-2xl ml-5">Code Fanatics</h1>
       </div>
       <div className="navbar-end">

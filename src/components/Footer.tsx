@@ -2,7 +2,7 @@ const date = new Date().getFullYear();
 
 const Footer = () => {
   return (
-    <div className="footer footer-center bg-neutral text-neutral-content fixed bottom-0 p-2">
+    <div className="footer footer-center bg-neutral text-neutral-content fixed bottom-0 p-2 text-lg">
       <aside>
         <p className='m-2'>Copyright © {date} - All rights reserved by Arranged Godly</p>
       </aside>

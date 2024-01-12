@@ -1,6 +1,13 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ["./src/**/*.{js,ts,jsx,tsx}"],
+  theme: {
+    extend: {
+      fontFamily: {
+        amatic: ["Amatic SC", "sans-serif"],
+      },
+    },
+  },
   plugins: [require("daisyui")],
   daisyui: {
     themes: ['nord', 'dracula'],

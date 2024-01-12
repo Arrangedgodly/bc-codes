@@ -1,19 +1,28 @@
 type AlbumProps = {
   name: string;
   image: string;
+  link: string;
 };
 
-const Album: React.FC<AlbumProps> = ({ name, image }) => {
+const Album: React.FC<AlbumProps> = ({ name, image, link }) => {
   return (
-    <div className="card w-1/5 bg-base-100 shadow-xl image-full m-5">
+    <div className="card w-1/4 bg-base-100 shadow-xl image-full m-5">
       <figure>
         <img src={image} alt={name} />
       </figure>
       <div className="justify-end card-body text-center">
-        <h2 className="card-title m-auto">{name}</h2>
+        <h2 className="card-title m-auto text-4xl">{name}</h2>
         <div className="flex-row card-actions">
-          <button className="btn btn-secondary w-1/3 mx-auto">Bandcamp</button>
-          <button className="btn btn-tertiary w-1/3 mx-auto">Generate Code</button>
+          <a
+            href={link}
+            target="_blank"
+            className="btn btn-secondary w-[45%] mx-auto text-xl"
+          >
+            Bandcamp
+          </a>
+          <button className="btn btn-tertiary w-[45%] mx-auto text-xl">
+            Generate Code
+          </button>
         </div>
       </div>
     </div>

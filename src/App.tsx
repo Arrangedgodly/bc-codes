@@ -19,7 +19,7 @@ const App = () => {
   }
 
   return (
-    <div data-theme={theme}>
+    <div data-theme={theme} className='font-amatic'>
       <Header theme={theme} handleThemeChange={handleThemeChange} />
       <div className="h-full w-full carousel carousel-center mx-auto">
         <Artist name="Arranged Godly" albums={agAlbums} />
