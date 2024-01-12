@@ -17,7 +17,7 @@ const Artist: React.FC<ArtistProps> = ({ name, albums }) => {
       <h1 className="text-6xl m-5 mx-auto font-bold mt-[10%]">{name}</h1>
       <div className="flex flex-row gap-10 mx-auto justify-center">
         {albums.map((album) => (
-          <Album name={album.name} image={album.image} link={album.link} />
+          <Album name={album.name} image={album.image} link={album.link} key={album.name} />
         ))}
       </div>
     </div>
