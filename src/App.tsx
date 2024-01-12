@@ -1,6 +1,7 @@
 import Header from "./components/Header";
 import Artist from "./components/Artist";
 import Footer from "./components/Footer";
+import Shortcut from "./components/Shortcut";
 import { agAlbums, cdcAlbums } from "./temp";
 import { useState, useEffect } from "react";
 import { themeChange } from 'theme-change';
@@ -24,6 +25,7 @@ const App = () => {
         <Artist name="Arranged Godly" albums={agAlbums} />
         <Artist name="CDC_" albums={cdcAlbums} />
       </div>
+      <Shortcut />
       <Footer />
     </div>
   );
