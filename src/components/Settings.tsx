@@ -14,8 +14,8 @@ const Settings: React.FC<SettingsProps> = ({ user }) => {
     }
   }, [user]);
   return (
-    <div>
-      
+    <div className="flex flex-col items-center justify-center h-screen w-full">
+      <h1 className="text-6xl font-bold m-5">Settings</h1>
     </div>
   )
 }

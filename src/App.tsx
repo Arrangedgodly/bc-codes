@@ -13,7 +13,7 @@ import { Routes, Route } from "react-router-dom";
 
 const App = () => {
   const [theme, setTheme] = useState("dracula");
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User | null>(localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")!) : null);
 
   useEffect(() => {
     themeChange(false);

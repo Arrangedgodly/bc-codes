@@ -15,9 +15,11 @@ const Profile: React.FC<ProfileProps> = ({ user }) => {
   }, [user]);
 
   return (
-    <div className="flex flex-col items-center justify-center">
-      <h1 className="text-4xl font-bold">Profile</h1>
-      <p className="text-2xl font-bold">{user?.email}</p>
+    <div className="flex flex-col items-center justify-center h-screen w-full">
+      <h1 className="text-6xl font-bold m-5">My Profile</h1>
+      <p className="text-3xl m-3">{user?.displayName}</p>
+      <p className="text-3xl m-3">{user?.email}</p>
+
     </div>
   )
 }

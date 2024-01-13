@@ -1,5 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, User, createUserWithEmailAndPassword } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAuOZMppl_i_395WP_5he4iDZ9CBl_QvmE",
@@ -12,6 +13,7 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
+const db = getFirestore();
 
 async function emailLogin(email: string, password: string): Promise<User | null> {
   const auth = getAuth();
@@ -56,4 +58,4 @@ async function emailSignup(email: string, password: string): Promise<User | null
   }
 }
 
-export { app, emailLogin, googleLogin, emailSignup, logout };
+export { app, db, emailLogin, googleLogin, emailSignup, logout };
