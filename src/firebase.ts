@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, User } from "firebase/auth";
+import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, User, createUserWithEmailAndPassword } from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAuOZMppl_i_395WP_5he4iDZ9CBl_QvmE",
@@ -36,4 +36,24 @@ async function googleLogin(): Promise<User | null> {
   }
 }
 
-export { emailLogin, googleLogin };
+async function logout(): Promise<void> {
+  const auth = getAuth();
+  try {
+    await auth.signOut();
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+async function emailSignup(email: string, password: string): Promise<User | null> {
+  const auth = getAuth();
+  try {
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    return userCredential.user;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}
+
+export { app, emailLogin, googleLogin, emailSignup, logout };

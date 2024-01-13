@@ -1,47 +1,66 @@
 import Header from "./components/Header";
-import Artist from "./components/Artist";
+import Artists from "./components/Artists";
+import Login from "./components/Login";
+import Signup from "./components/Signup";
+import Profile from "./components/Profile";
+import Settings from "./components/Settings";
 import Footer from "./components/Footer";
-import Shortcut from "./components/Shortcut";
-import { agAlbums, cdcAlbums } from "./temp";
 import { useState, useEffect } from "react";
-import { themeChange } from 'theme-change';
+import { themeChange } from "theme-change";
 import { User } from "firebase/auth";
-import { emailLogin, googleLogin } from "./firebase";
+import { emailLogin, googleLogin, emailSignup, logout } from "./firebase";
+import { Routes, Route } from "react-router-dom";
 
 const App = () => {
-  const [theme, setTheme] = useState('dracula');
+  const [theme, setTheme] = useState("dracula");
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
-    themeChange(false)
-  }, [])
+    themeChange(false);
+  }, []);
 
   const handleThemeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setTheme(event.target.checked ? 'nord' : 'dracula');
+    setTheme(event.target.checked ? "nord" : "dracula");
     themeChange(event.target.checked);
-  }
+  };
 
   const handleEmailLogin = async (email: string, password: string) => {
     const user = await emailLogin(email, password);
     setUser(user);
+    localStorage.setItem("user", JSON.stringify(user));
   };
 
   const handleGoogleLogin = async () => {
     const user = await googleLogin();
     setUser(user);
+    localStorage.setItem("user", JSON.stringify(user));
+  };
+
+  const handleEmailSignup = async (email: string, password: string) => {
+    const user = await emailSignup(email, password);
+    setUser(user);
+    localStorage.setItem("user", JSON.stringify(user));
+  };
+
+  const handleLogout = async () => {
+    await logout();
+    setUser(null);
+    localStorage.removeItem("user");
   };
 
   return (
-    <div data-theme={theme} className='font-amatic'>
-      <Header theme={theme} handleThemeChange={handleThemeChange} user={user} />
-      <div className="h-full w-full carousel carousel-center mx-auto">
-        <Artist name="Arranged Godly" albums={agAlbums} />
-        <Artist name="CDC_" albums={cdcAlbums} />
-      </div>
-      <Shortcut />
+    <div data-theme={theme} className="font-amatic">
+      <Header theme={theme} handleThemeChange={handleThemeChange} user={user} handleLogout={handleLogout} />
+      <Routes>
+        <Route path="/" element={<Artists />} />
+        <Route path="/login" element={<Login user={user} handleEmailLogin={handleEmailLogin} handleGoogleLogin={handleGoogleLogin} />} />
+        <Route path="/signup" element={<Signup user={user} handleEmailSignup={handleEmailSignup} handleGoogleSignup={handleGoogleLogin}/>} />
+        <Route path="/profile" element={<Profile user={user} />} />
+        <Route path="/settings" element={<Settings user={user} />} />
+      </Routes>
       <Footer />
     </div>
   );
-}
+};
 
 export default App;
