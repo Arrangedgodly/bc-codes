@@ -1,13 +1,23 @@
 type AlbumProps = {
   name: string;
+  codes: string[];
   image: string;
   link: string;
 };
 
-const Album: React.FC<AlbumProps> = ({ name, image, link }) => {
+const Album: React.FC<AlbumProps> = ({ name, image, link, codes }) => {
+  const codesAvailable = codes.length;
   return (
     <div className="card w-1/4 bg-base-100 shadow-xl image-full m-5 indicator">
-      <span className="indicator-item indicator-center btn btn-lg btn-success w-2/3 text-3xl z-10">100 Codes Available!</span>
+      {codesAvailable === 0 ? (
+        <span className="indicator-item indicator-center indicator-bottom badge badge-lg badge-error text-2xl z-10">
+          No Codes Left!
+        </span>
+      ) : (
+        <span className="indicator-item indicator-center indicator-bottom badge badge-lg badge-success text-2xl z-10">
+          {codesAvailable} Codes Available!
+        </span>
+      )}
       <figure>
         <img src={image} alt={name} />
       </figure>
@@ -21,9 +31,11 @@ const Album: React.FC<AlbumProps> = ({ name, image, link }) => {
           >
             Bandcamp
           </a>
-          <button className="btn btn-tertiary w-[45%] mx-auto text-xl">
-            Learn More
-          </button>
+          {codesAvailable > 0 ? (
+            <button className="btn btn-accent w-[45%] mx-auto text-xl">Get Code</button>
+          ) : (
+            <button className="btn btn-tertiary w-[45%] mx-auto text-xl">Learn More</button>
+          )}
         </div>
       </div>
     </div>

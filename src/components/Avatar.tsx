@@ -1,9 +1,5 @@
 import { Link } from "react-router-dom";
-
-type AvatarProps = {
-  user: any;
-  handleLogout: () => void;
-};
+import { AvatarProps } from "../types";
 
 const Avatar: React.FC<AvatarProps> = ({ user, handleLogout }) => {
   const getInitials = (name: string) => {
@@ -26,7 +22,7 @@ const Avatar: React.FC<AvatarProps> = ({ user, handleLogout }) => {
               </div>
             ) : (
               <div className="w-10 rounded-full bg-secondary">
-              <span className="text-4xl text-secondary-content">{getInitials(user.displayName)}</span>
+              <span className="text-4xl text-secondary-content">{getInitials(user.name)}</span>
             </div>
             )}
           </summary>

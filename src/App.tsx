@@ -7,13 +7,13 @@ import Settings from "./components/Settings";
 import Footer from "./components/Footer";
 import { useState, useEffect } from "react";
 import { themeChange } from "theme-change";
-import { User } from "firebase/auth";
 import { emailLogin, googleLogin, emailSignup, logout } from "./firebase";
 import { Routes, Route } from "react-router-dom";
+import { ArtistProps } from "./types";
 
 const App = () => {
   const [theme, setTheme] = useState("dracula");
-  const [user, setUser] = useState<User | null>(localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")!) : null);
+  const [user, setUser] = useState<ArtistProps | null>(localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")!) : null);
 
   useEffect(() => {
     themeChange(false);

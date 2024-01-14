@@ -1,7 +1,6 @@
 import Artist from "./Artist";
 import Shortcut from "./Shortcut";
 import Loading from "./Loading";
-import { Suspense } from "react";
 import { db } from "../firebase";
 import {
   collection,
@@ -10,25 +9,17 @@ import {
   DocumentReference,
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
+import { AlbumProps, ArtistProps } from "../types";
 
-type AlbumProps = {
-  name: string;
-  artist: string;
-  image: string;
-  link: string;
-};
-
-type ArtistProps = {
-  name: string;
-  location: string;
-  releases: AlbumProps[];
-};
 
 const Artists = () => {
   const [artists, setArtists] = useState<ArtistProps[]>([]);
+  const [sortedArtists, setSortedArtists] = useState<ArtistProps[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchArtists = async () => {
+      setLoading(true);
       try {
         const artistsCollection = collection(db, "artists");
         const artistsSnapshot = await getDocs(artistsCollection);
@@ -50,6 +41,7 @@ const Artists = () => {
           })
         );
         setArtists(artistsList);
+        setLoading(false);
       } catch (error) {
         console.error("Error fetching artists: ", error);
       }
@@ -57,18 +49,30 @@ const Artists = () => {
     fetchArtists();
   }, []);
 
+  const filterArtistsWithReleases = (artists: ArtistProps[]): ArtistProps[] => {
+    return artists.filter((artist) => artist.releases.length > 0);
+  };
+
+  useEffect(() => {
+    setSortedArtists(filterArtistsWithReleases(artists));
+  }, [artists]);
+
   return (
     <div className="h-full w-full carousel carousel-center mx-auto">
-      <Suspense fallback={<Loading />}>
-        {artists.map((artist) => (
-          <Artist
-            key={artist.name}
-            name={artist.name}
-            location={artist.location}
-            releases={artist.releases}
-          />
-        ))}
-      </Suspense>
+      {loading ? (
+        <Loading />
+      ) : (
+        sortedArtists.map((artist) => {
+          return (
+            <Artist
+              key={artist.name}
+              name={artist.name}
+              location={artist.location}
+              releases={artist.releases}
+            />
+          );
+        })
+      )}
       <Shortcut />
     </div>
   );
