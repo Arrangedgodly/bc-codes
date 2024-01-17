@@ -55,7 +55,7 @@ const App = () => {
         <Route path="/" element={<Artists />} />
         <Route path="/login" element={<Login user={user} handleEmailLogin={handleEmailLogin} handleGoogleLogin={handleGoogleLogin} />} />
         <Route path="/signup" element={<Signup user={user} handleEmailSignup={handleEmailSignup} handleGoogleSignup={handleGoogleLogin}/>} />
-        <Route path="/profile" element={<Profile user={user} />} />
+        <Route path="/profile" element={<Profile user={user} setUser={setUser} />} />
         <Route path="/settings" element={<Settings user={user} />} />
       </Routes>
       <Footer />

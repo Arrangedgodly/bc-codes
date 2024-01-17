@@ -9,22 +9,18 @@ const Avatar: React.FC<AvatarProps> = ({ user, handleLogout }) => {
       initials += name[0];
     });
     return initials;
-  }
+  };
 
   return (
     <details className="dropdown dropdown-end">
       {user ? (
         <>
           <summary className="m-2 btn btn-ghost avatar online">
-            {user.photoURL ? (
-              <div className="w-10 rounded-full">
-                <img src={user.photoURL} />
-              </div>
-            ) : (
-              <div className="w-10 rounded-full bg-secondary">
-              <span className="text-4xl text-secondary-content">{getInitials(user.name)}</span>
+            <div className="w-10 rounded-full bg-secondary">
+              <span className="text-4xl text-secondary-content">
+                {getInitials(user.name)}
+              </span>
             </div>
-            )}
           </summary>
           <ul className="p-2 shadow menu dropdown-content z-[1] bg-secondary rounded-box w-35 text-xl text-secondary-content">
             <li className="mx-auto">
@@ -34,7 +30,9 @@ const Avatar: React.FC<AvatarProps> = ({ user, handleLogout }) => {
               <Link to="/settings">Settings</Link>
             </li>
             <li className="mx-auto">
-              <Link to="/" onClick={handleLogout}>Logout</Link>
+              <Link to="/" onClick={handleLogout}>
+                Logout
+              </Link>
             </li>
           </ul>
         </>

@@ -115,6 +115,7 @@ async function getUserDocument(uid: string): Promise<ArtistProps | null> {
 async function createUserDocument(uid: string): Promise<void> {
   const docRef = doc(db, "artists", uid);
   await setDoc(docRef, {
+    uid,
     name: "",
     location: "",
     releases: [],
@@ -134,4 +135,4 @@ async function updateUserLocation(
   await setDoc(docRef, { location }, { merge: true });
 }
 
-export { app, db, emailLogin, googleLogin, emailSignup, logout, updateUserLocation, updateUserName };
+export { app, db, emailLogin, googleLogin, emailSignup, logout, getUserDocument, updateUserLocation, updateUserName };

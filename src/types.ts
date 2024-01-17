@@ -7,6 +7,7 @@ export type AlbumProps = {
 };
 
 export type ArtistProps = {
+  uid: string;
   name: string;
   location: string;
   releases: AlbumProps[];
