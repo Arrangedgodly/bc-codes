@@ -10,15 +10,18 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "csvtojson": "^2.0.10",
     "firebase": "^10.7.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.21.2",
-    "theme-change": "^2.5.0"
+    "theme-change": "^2.5.0",
+    "validator": "^13.11.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.43",
     "@types/react-dom": "^18.2.17",
+    "@types/validator": "^13.11.8",
     "@typescript-eslint/eslint-plugin": "^6.14.0",
     "@typescript-eslint/parser": "^6.14.0",
     "@vitejs/plugin-react": "^4.2.1",

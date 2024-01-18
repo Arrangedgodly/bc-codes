@@ -1,6 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { getUserDocument, updateUserName, updateUserLocation } from "../firebase";
+import {
+  getUserDocument,
+  updateUserName,
+  updateUserLocation,
+} from "../firebase";
+import NewRelease from "./NewRelease";
 
 type ProfileProps = {
   user: any;
@@ -28,7 +33,7 @@ const Profile: React.FC<ProfileProps> = ({ user, setUser }) => {
     await updateUserName(user.uid, artistName);
     setNewArtistName(false);
     setUser(await getUserDocument(user.uid));
-  }
+  };
 
   const handleLocationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setLocation(e.target.value);
@@ -38,7 +43,7 @@ const Profile: React.FC<ProfileProps> = ({ user, setUser }) => {
     await updateUserLocation(user.uid, location);
     setNewLocation(false);
     setUser(await getUserDocument(user.uid));
-  }
+  };
 
   useEffect(() => {
     if (artistName !== user.name) {
@@ -61,10 +66,13 @@ const Profile: React.FC<ProfileProps> = ({ user, setUser }) => {
       <h1 className="text-6xl font-bold m-5">My Profile</h1>
       <div className="indicator m-3">
         <span className="indicator-item indicator-start badge badge-secondary text-xl">
-          Artist Name
+          Artist/Label Name
         </span>
         {newArtistName && (
-          <span className="indicator-item indicator-end indicator-bottom btn btn-info btn-sm text-xl" onClick={handleArtistNameSave}>
+          <span
+            className="indicator-item indicator-end indicator-bottom btn btn-info btn-sm text-xl"
+            onClick={handleArtistNameSave}
+          >
             Save
           </span>
         )}
@@ -77,11 +85,14 @@ const Profile: React.FC<ProfileProps> = ({ user, setUser }) => {
         />
       </div>
       <div className="indicator m-3">
-        <span className="indicator-item indicator-start badge badge-secondary text-xl" onClick={handleLocationSave}>
+        <span className="indicator-item indicator-start badge badge-secondary text-xl">
           Location
         </span>
         {newLocation && (
-          <span className="indicator-item indicator-end indicator-bottom btn btn-info btn-sm text-xl">
+          <span
+            className="indicator-item indicator-end indicator-bottom btn btn-info btn-sm text-xl"
+            onClick={handleLocationSave}
+          >
             Save
           </span>
         )}
@@ -94,6 +105,10 @@ const Profile: React.FC<ProfileProps> = ({ user, setUser }) => {
         />
       </div>
       <h2 className="text-4xl font-bold m-5">My Releases</h2>
+      <label htmlFor="new_release" className="btn btn-primary btn-lg text-xl">
+        + New Release
+      </label>
+      <NewRelease user={user} />
     </div>
   );
 };
