@@ -3,10 +3,18 @@ type ThemeChangerProps = {
   handleThemeChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
-const ThemeChanger: React.FC<ThemeChangerProps> = ({ theme, handleThemeChange }) => {
+const ThemeChanger: React.FC<ThemeChangerProps> = ({
+  theme,
+  handleThemeChange,
+}) => {
   return (
     <label className="swap swap-rotate">
-      <input type="checkbox" className="theme-controller" value={theme} onChange={handleThemeChange} />
+      <input
+        type="checkbox"
+        className="theme-controller"
+        value={theme}
+        onChange={handleThemeChange}
+      />
       <svg
         className="swap-on fill-current w-10 h-10"
         xmlns="http://www.w3.org/2000/svg"

@@ -13,7 +13,11 @@ import { ArtistProps } from "./types";
 
 const App = () => {
   const [theme, setTheme] = useState("dracula");
-  const [user, setUser] = useState<ArtistProps | null>(localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")!) : null);
+  const [user, setUser] = useState<ArtistProps | null>(
+    localStorage.getItem("user")
+      ? JSON.parse(localStorage.getItem("user")!)
+      : null
+  );
 
   useEffect(() => {
     themeChange(false);
@@ -50,12 +54,38 @@ const App = () => {
 
   return (
     <div data-theme={theme} className="font-amatic">
-      <Header theme={theme} handleThemeChange={handleThemeChange} user={user} handleLogout={handleLogout} />
+      <Header
+        theme={theme}
+        handleThemeChange={handleThemeChange}
+        user={user}
+        handleLogout={handleLogout}
+      />
       <Routes>
         <Route path="/" element={<Artists />} />
-        <Route path="/login" element={<Login user={user} handleEmailLogin={handleEmailLogin} handleGoogleLogin={handleGoogleLogin} />} />
-        <Route path="/signup" element={<Signup user={user} handleEmailSignup={handleEmailSignup} handleGoogleSignup={handleGoogleLogin}/>} />
-        <Route path="/profile" element={<Profile user={user} setUser={setUser} />} />
+        <Route
+          path="/login"
+          element={
+            <Login
+              user={user}
+              handleEmailLogin={handleEmailLogin}
+              handleGoogleLogin={handleGoogleLogin}
+            />
+          }
+        />
+        <Route
+          path="/signup"
+          element={
+            <Signup
+              user={user}
+              handleEmailSignup={handleEmailSignup}
+              handleGoogleSignup={handleGoogleLogin}
+            />
+          }
+        />
+        <Route
+          path="/profile"
+          element={<Profile user={user} setUser={setUser} />}
+        />
         <Route path="/settings" element={<Settings user={user} />} />
       </Routes>
       <Footer />

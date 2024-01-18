@@ -4,7 +4,7 @@ import {
   getUserDocument,
   updateUserName,
   updateUserLocation,
-  getRelease
+  getRelease,
 } from "../firebase";
 import NewRelease from "./NewRelease";
 import Release from "./Release";
@@ -122,7 +122,7 @@ const Profile: React.FC<ProfileProps> = ({ user, setUser }) => {
       {releases && (
         <div className="flex items-center justify-center">
           {releases.map((release: any) => (
-            <Release release={release} />
+            <Release release={release} key={release.name} />
           ))}
         </div>
       )}

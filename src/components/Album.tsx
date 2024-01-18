@@ -1,9 +1,17 @@
 import { ReleaseProps } from "../types";
 
-const Album: React.FC<ReleaseProps> = ({ name, artist, codes, image, link, releaseDate, releaseType }) => {
+const Album: React.FC<ReleaseProps> = ({
+  name,
+  artist,
+  codes,
+  image,
+  link,
+  releaseDate,
+  releaseType,
+}) => {
   const codesAvailable = codes.length;
   return (
-    <div className="card w-1/4 bg-base-100 shadow-xl image-full m-5 indicator">
+    <div className="card w-1/5 bg-base-100 shadow-xl image-full m-5 indicator">
       {codesAvailable === 0 ? (
         <span className="indicator-item indicator-center indicator-bottom badge badge-lg badge-error text-2xl z-10">
           No Codes Left!
@@ -18,7 +26,9 @@ const Album: React.FC<ReleaseProps> = ({ name, artist, codes, image, link, relea
       </figure>
       <div className="justify-end card-body text-center">
         <h2 className="card-title m-auto text-4xl">{name}</h2>
-        <p className="text-xl">{releaseType} by {artist}</p>
+        <p className="text-xl">
+          {releaseType} by {artist}
+        </p>
         <div className="flex-row card-actions">
           <a
             href={link}
@@ -28,9 +38,13 @@ const Album: React.FC<ReleaseProps> = ({ name, artist, codes, image, link, relea
             Bandcamp
           </a>
           {codesAvailable > 0 ? (
-            <button className="btn btn-accent w-[45%] mx-auto text-xl">Get Code</button>
+            <button className="btn btn-accent w-[45%] mx-auto text-xl">
+              Get Code
+            </button>
           ) : (
-            <button className="btn btn-tertiary w-[45%] mx-auto text-xl">Learn More</button>
+            <button className="btn btn-tertiary w-[45%] mx-auto text-xl">
+              Learn More
+            </button>
           )}
         </div>
       </div>

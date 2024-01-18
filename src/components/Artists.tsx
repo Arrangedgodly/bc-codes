@@ -11,7 +11,6 @@ import {
 import { useEffect, useState } from "react";
 import { ReleaseProps, ArtistProps } from "../types";
 
-
 const Artists = () => {
   const [artists, setArtists] = useState<ArtistProps[]>([]);
   const [sortedArtists, setSortedArtists] = useState<ArtistProps[]>([]);
@@ -28,7 +27,7 @@ const Artists = () => {
             const artistData = doc.data();
             const releases = await Promise.all(
               artistData.releases.map(async (releaseId: string) => {
-                const releaseRef = document(db, 'releases', releaseId);
+                const releaseRef = document(db, "releases", releaseId);
                 const releaseSnapshot = await getDoc(releaseRef);
                 return releaseSnapshot.data() as ReleaseProps;
               })

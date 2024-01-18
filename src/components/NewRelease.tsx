@@ -80,8 +80,8 @@ const NewRelease: React.FC<NewReleaseProps> = ({ user, setUser }) => {
       link: bandcampURL,
       image: imageURL,
       releaseDate,
-      releaseType
-    }
+      releaseType,
+    };
     await addRelease(user.uid, release);
     setImageURL("");
     setTitle("");
@@ -92,7 +92,7 @@ const NewRelease: React.FC<NewReleaseProps> = ({ user, setUser }) => {
     setCodes([]);
     setCodeCount(0);
     setUser(await getUserDocument(user.uid));
-  }
+  };
 
   useEffect(() => {
     setCodeCount(codes.length);
@@ -188,7 +188,7 @@ const NewRelease: React.FC<NewReleaseProps> = ({ user, setUser }) => {
             className="select select-bordered w-full my-2 text-xl"
             onChange={handleReleaseTypeChange}
           >
-            <option disabled selected>
+            <option disabled value={releaseType}>
               Release Type
             </option>
             <option>Single</option>

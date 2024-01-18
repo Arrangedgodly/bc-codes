@@ -7,7 +7,9 @@ const Artist: React.FC<ArtistProps> = ({ name, location, releases }) => {
 
   useEffect(() => {
     const sorted = releases.sort((a, b) => {
-      return new Date(b.releaseDate).getTime() - new Date(a.releaseDate).getTime();
+      return (
+        new Date(b.releaseDate).getTime() - new Date(a.releaseDate).getTime()
+      );
     });
     setSortedReleases(sorted);
   }, [releases]);
@@ -19,6 +21,7 @@ const Artist: React.FC<ArtistProps> = ({ name, location, releases }) => {
       <div className="flex flex-row gap-10 mx-auto justify-center">
         {sortedReleases.map((album) => (
           <Album
+            key={album.name}
             name={album.name}
             artist={album.artist}
             codes={album.codes}

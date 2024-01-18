@@ -180,5 +180,5 @@ export {
   updateUserLocation,
   updateUserName,
   addRelease,
-  getRelease
+  getRelease,
 };
