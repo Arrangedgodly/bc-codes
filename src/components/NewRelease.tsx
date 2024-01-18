@@ -102,7 +102,7 @@ const NewRelease: React.FC<NewReleaseProps> = ({ user, setUser }) => {
     <>
       <input type="checkbox" id="new_release" className="modal-toggle" />
       <div className="modal" role="dialog">
-        <div className="modal-box">
+        <div className="modal-box glass">
           <h3 className="text-5xl font-bold">Add New Release</h3>
           <p className="text-2xl">* denotes required fields</p>
           {imageURL && (

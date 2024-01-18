@@ -53,8 +53,14 @@ const Artists = () => {
     return artists.filter((artist) => artist.releases.length > 0);
   };
 
+  const sortArtistsAlphabetically = (artists: ArtistProps[]): ArtistProps[] => {
+    return artists.sort((a, b) => {
+      return a.name.localeCompare(b.name);
+    });
+  }
+
   useEffect(() => {
-    setSortedArtists(filterArtistsWithReleases(artists));
+    setSortedArtists(sortArtistsAlphabetically(filterArtistsWithReleases(artists)));
   }, [artists]);
 
   return (
