@@ -6,8 +6,16 @@ import {
   signInWithPopup,
   createUserWithEmailAndPassword,
 } from "firebase/auth";
-import { getFirestore, doc, setDoc, getDoc } from "firebase/firestore";
-import { ArtistProps } from "./types";
+import {
+  getFirestore,
+  doc,
+  setDoc,
+  getDoc,
+  addDoc,
+  collection,
+  updateDoc,
+} from "firebase/firestore";
+import { ArtistProps, ReleaseProps } from "./types";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAuOZMppl_i_395WP_5he4iDZ9CBl_QvmE",
@@ -135,4 +143,42 @@ async function updateUserLocation(
   await setDoc(docRef, { location }, { merge: true });
 }
 
-export { app, db, emailLogin, googleLogin, emailSignup, logout, getUserDocument, updateUserLocation, updateUserName };
+async function addRelease(
+  artistId: string,
+  releaseData: ReleaseProps
+): Promise<void> {
+  const releaseRef = await addDoc(collection(db, "releases"), releaseData);
+  const artistRef = doc(db, "artists", artistId);
+  const artistDoc = await getDoc(artistRef);
+
+  if (artistDoc.exists()) {
+    const artistData = artistDoc.data() as ArtistProps;
+    const updatedReleases = [...artistData.releases, releaseRef.id];
+    await updateDoc(artistRef, { releases: updatedReleases });
+  } else {
+    throw new Error("Artist document does not exist");
+  }
+}
+
+async function getRelease(releaseId: string): Promise<ReleaseProps | null> {
+  const releaseRef = doc(db, "releases", releaseId);
+  const releaseDoc = await getDoc(releaseRef);
+  if (releaseDoc.exists()) {
+    return releaseDoc.data() as ReleaseProps;
+  }
+  return null;
+}
+
+export {
+  app,
+  db,
+  emailLogin,
+  googleLogin,
+  emailSignup,
+  logout,
+  getUserDocument,
+  updateUserLocation,
+  updateUserName,
+  addRelease,
+  getRelease
+};

@@ -6,10 +6,10 @@ import {
   collection,
   getDocs,
   getDoc,
-  DocumentReference,
+  doc as document,
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import { AlbumProps, ArtistProps } from "../types";
+import { ReleaseProps, ArtistProps } from "../types";
 
 
 const Artists = () => {
@@ -27,13 +27,14 @@ const Artists = () => {
           artistsSnapshot.docs.map(async (doc) => {
             const artistData = doc.data();
             const releases = await Promise.all(
-              artistData.releases.map(async (releaseRef: DocumentReference) => {
+              artistData.releases.map(async (releaseId: string) => {
+                const releaseRef = document(db, 'releases', releaseId);
                 const releaseSnapshot = await getDoc(releaseRef);
-                return releaseSnapshot.data() as AlbumProps;
+                return releaseSnapshot.data() as ReleaseProps;
               })
             );
             return {
-              id: doc.id,
+              uid: doc.id,
               name: artistData.name,
               location: artistData.location,
               releases,
@@ -65,6 +66,7 @@ const Artists = () => {
         sortedArtists.map((artist) => {
           return (
             <Artist
+              uid={artist.uid}
               key={artist.name}
               name={artist.name}
               location={artist.location}

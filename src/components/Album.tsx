@@ -1,11 +1,6 @@
-type AlbumProps = {
-  name: string;
-  codes: string[];
-  image: string;
-  link: string;
-};
+import { ReleaseProps } from "../types";
 
-const Album: React.FC<AlbumProps> = ({ name, image, link, codes }) => {
+const Album: React.FC<ReleaseProps> = ({ name, artist, codes, image, link, releaseDate, releaseType }) => {
   const codesAvailable = codes.length;
   return (
     <div className="card w-1/4 bg-base-100 shadow-xl image-full m-5 indicator">
@@ -23,6 +18,7 @@ const Album: React.FC<AlbumProps> = ({ name, image, link, codes }) => {
       </figure>
       <div className="justify-end card-body text-center">
         <h2 className="card-title m-auto text-4xl">{name}</h2>
+        <p className="text-xl">{releaseType} by {artist}</p>
         <div className="flex-row card-actions">
           <a
             href={link}

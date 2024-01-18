@@ -4,8 +4,10 @@ import {
   getUserDocument,
   updateUserName,
   updateUserLocation,
+  getRelease
 } from "../firebase";
 import NewRelease from "./NewRelease";
+import Release from "./Release";
 
 type ProfileProps = {
   user: any;
@@ -18,6 +20,7 @@ const Profile: React.FC<ProfileProps> = ({ user, setUser }) => {
   const [newArtistName, setNewArtistName] = useState<boolean>(false);
   const [location, setLocation] = useState<string>(user.location);
   const [newLocation, setNewLocation] = useState<boolean>(false);
+  const [releases, setReleases] = useState<any[]>([]);
 
   useEffect(() => {
     if (!user) {
@@ -60,6 +63,17 @@ const Profile: React.FC<ProfileProps> = ({ user, setUser }) => {
       setNewLocation(false);
     }
   }, [location]);
+
+  useEffect(() => {
+    const fetchReleases = async () => {
+      const releaseData = await Promise.all(
+        user.releases.map((releaseId: string) => getRelease(releaseId))
+      );
+      setReleases(releaseData);
+    };
+
+    fetchReleases();
+  }, [user.releases]);
 
   return (
     <div className="flex flex-col items-center justify-center h-screen w-full">
@@ -105,10 +119,17 @@ const Profile: React.FC<ProfileProps> = ({ user, setUser }) => {
         />
       </div>
       <h2 className="text-4xl font-bold m-5">My Releases</h2>
+      {releases && (
+        <div className="flex items-center justify-center">
+          {releases.map((release: any) => (
+            <Release release={release} />
+          ))}
+        </div>
+      )}
       <label htmlFor="new_release" className="btn btn-primary btn-lg text-xl">
         + New Release
       </label>
-      <NewRelease user={user} />
+      <NewRelease user={user} setUser={setUser} />
     </div>
   );
 };
