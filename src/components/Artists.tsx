@@ -29,7 +29,7 @@ const Artists = () => {
               artistData.releases.map(async (releaseId: string) => {
                 const releaseRef = document(db, "releases", releaseId);
                 const releaseSnapshot = await getDoc(releaseRef);
-                return releaseSnapshot.data() as ReleaseProps;
+                return {...releaseSnapshot.data() as ReleaseProps, id: releaseId}
               })
             );
             return {

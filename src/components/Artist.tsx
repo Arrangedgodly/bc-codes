@@ -22,12 +22,12 @@ const Artist: React.FC<ArtistProps> = ({ name, location, releases }) => {
         {sortedReleases.map((album) => (
           <Album
             key={album.name}
+            id={album.id}
             name={album.name}
             artist={album.artist}
             codes={album.codes}
             image={album.image}
             link={album.link}
-            releaseDate={album.releaseDate}
             releaseType={album.releaseType}
           />
         ))}

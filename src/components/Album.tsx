@@ -1,15 +1,29 @@
-import { ReleaseProps } from "../types";
+import { useNavigate } from "react-router-dom";
 
-const Album: React.FC<ReleaseProps> = ({
+type AlbumProps = {
+  id: string;
+  name: string;
+  artist: string;
+  codes: string[];
+  image: string;
+  link: string;
+  releaseType: string;
+};
+
+const Album: React.FC<AlbumProps> = ({
+  id,
   name,
   artist,
   codes,
   image,
   link,
-  releaseDate,
   releaseType,
 }) => {
   const codesAvailable = codes.length;
+  const navigate = useNavigate();
+  const navigateToRelease = () => {
+    navigate(`/release/${id}`);
+  };
   return (
     <div className="card w-1/5 bg-base-100 shadow-xl image-full m-5 indicator">
       {codesAvailable === 0 ? (
@@ -38,11 +52,17 @@ const Album: React.FC<ReleaseProps> = ({
             Bandcamp
           </a>
           {codesAvailable > 0 ? (
-            <button className="btn btn-accent w-[45%] mx-auto text-xl">
+            <button
+              className="btn btn-accent w-[45%] mx-auto text-xl"
+              onClick={navigateToRelease}
+            >
               Get Code
             </button>
           ) : (
-            <button className="btn btn-tertiary w-[45%] mx-auto text-xl">
+            <button
+              className="btn btn-tertiary w-[45%] mx-auto text-xl"
+              onClick={navigateToRelease}
+            >
               Learn More
             </button>
           )}

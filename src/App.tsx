@@ -4,6 +4,7 @@ import Login from "./components/Login";
 import Signup from "./components/Signup";
 import Profile from "./components/Profile";
 import Settings from "./components/Settings";
+import AlbumPage from "./components/AlbumPage";
 import Footer from "./components/Footer";
 import { useState, useEffect } from "react";
 import { themeChange } from "theme-change";
@@ -87,6 +88,7 @@ const App = () => {
           element={<Profile user={user} setUser={setUser} />}
         />
         <Route path="/settings" element={<Settings user={user} />} />
+        <Route path="/release/:releaseId" element={<AlbumPage />} />
       </Routes>
       <Footer />
     </div>
