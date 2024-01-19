@@ -92,7 +92,6 @@ const AlbumPage: React.FC<AlbumPageProps> = ({ user }) => {
               : "btn btn-primary btn-lg text-3xl btn-disabled"
           }
           onClick={handleGetCode}
-          disabled={alreadyRedeemed}
         >
           {user ? (alreadyRedeemed ? "Already Redeemed!" : "Get Code!") : "Login to redeem code!"}
         </div>
