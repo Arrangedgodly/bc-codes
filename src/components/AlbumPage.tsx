@@ -34,15 +34,19 @@ const AlbumPage: React.FC<AlbumPageProps> = ({ user }) => {
     const code = await getCode(releaseId || "");
     if (code) {
       await removeCode(releaseId || "", code);
-      setRelease({ ...release, codes: release.codes.filter((c: string) => c !== code) });
+      setRelease({
+        ...release,
+        codes: release.codes.filter((c: string) => c !== code),
+      });
       await addCodeToUser(user.uid, releaseId, code);
     }
-  }
+  };
 
   useEffect(() => {
     if (releaseId === undefined) {
       navigate("/");
-    }}, [releaseId]);
+    }
+  }, [releaseId]);
 
   return (
     <div className="flex flex-col items-center h-screen w-full">
@@ -66,9 +70,23 @@ const AlbumPage: React.FC<AlbumPageProps> = ({ user }) => {
         Codes Available: {release?.codes.length}
       </p>
       <div className="flex flex-row gap-10 mx-auto justify-center">
-        <div className={user ? "btn btn-primary btn-lg text-3xl" : "btn btn-primary btn-lg text-3xl btn-disabled"} onClick={handleGetCode}>{user ? "Get Code!" : "Login to redeem code!"}</div>
-        <a className="btn btn-secondary btn-lg text-3xl" href={release?.link} target="_blank">Bandcamp</a>
-        <div className="btn btn-accent btn-lg text-3xl">Notify Me</div>
+        <div
+          className={
+            user
+              ? "btn btn-primary btn-lg text-3xl"
+              : "btn btn-primary btn-lg text-3xl btn-disabled"
+          }
+          onClick={handleGetCode}
+        >
+          {user ? "Get Code!" : "Login to redeem code!"}
+        </div>
+        <a
+          className="btn btn-secondary btn-lg text-3xl"
+          href={release?.link}
+          target="_blank"
+        >
+          Bandcamp
+        </a>
       </div>
     </div>
   );

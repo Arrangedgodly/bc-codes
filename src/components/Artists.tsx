@@ -29,7 +29,10 @@ const Artists = () => {
               artistData.releases.map(async (releaseId: string) => {
                 const releaseRef = document(db, "releases", releaseId);
                 const releaseSnapshot = await getDoc(releaseRef);
-                return {...releaseSnapshot.data() as ReleaseProps, id: releaseId}
+                return {
+                  ...(releaseSnapshot.data() as ReleaseProps),
+                  id: releaseId,
+                };
               })
             );
             return {
@@ -57,10 +60,12 @@ const Artists = () => {
     return artists.sort((a, b) => {
       return a.name.localeCompare(b.name);
     });
-  }
+  };
 
   useEffect(() => {
-    setSortedArtists(sortArtistsAlphabetically(filterArtistsWithReleases(artists)));
+    setSortedArtists(
+      sortArtistsAlphabetically(filterArtistsWithReleases(artists))
+    );
   }, [artists]);
 
   return (
@@ -74,6 +79,7 @@ const Artists = () => {
               uid={artist.uid}
               key={artist.name}
               name={artist.name}
+              redeemed={artist.redeemed}
               location={artist.location}
               releases={artist.releases}
             />

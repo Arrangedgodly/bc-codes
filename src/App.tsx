@@ -8,7 +8,13 @@ import AlbumPage from "./components/AlbumPage";
 import Footer from "./components/Footer";
 import { useState, useEffect } from "react";
 import { themeChange } from "theme-change";
-import { emailLogin, googleLogin, emailSignup, logout, getUserDocument } from "./firebase";
+import {
+  emailLogin,
+  googleLogin,
+  emailSignup,
+  logout,
+  getUserDocument,
+} from "./firebase";
 import { Routes, Route } from "react-router-dom";
 import { ArtistProps } from "./types";
 
@@ -37,8 +43,8 @@ const App = () => {
   const handleEmailLogin = async (email: string, password: string) => {
     const user = await emailLogin(email, password);
     if (user) {
-    localStorage.setItem("uid", JSON.stringify(user.uid));
-    setUser(user);
+      localStorage.setItem("uid", JSON.stringify(user.uid));
+      setUser(user);
     }
   };
 
@@ -47,7 +53,7 @@ const App = () => {
     if (user) {
       localStorage.setItem("uid", JSON.stringify(user.uid));
       setUser(user);
-      }
+    }
   };
 
   const handleEmailSignup = async (email: string, password: string) => {
@@ -55,7 +61,7 @@ const App = () => {
     if (user) {
       localStorage.setItem("uid", JSON.stringify(user.uid));
       setUser(user);
-      }
+    }
   };
 
   const handleLogout = async () => {

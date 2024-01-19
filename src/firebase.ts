@@ -176,7 +176,7 @@ async function getCode(releaseId: string): Promise<string | null> {
   if (releaseDoc.exists()) {
     const releaseData = releaseDoc.data() as ReleaseProps;
     const codes = releaseData.codes;
-    
+
     if (codes.length > 0) {
       const code = codes[0];
       return code;
@@ -199,7 +199,11 @@ async function removeCode(releaseId: string, code: string): Promise<void> {
   }
 }
 
-async function addCodeToUser(artistId: string, releaseId: string, code: string): Promise<void> {
+async function addCodeToUser(
+  artistId: string,
+  releaseId: string,
+  code: string
+): Promise<void> {
   const artistRef = doc(db, "artists", artistId);
   const artistDoc = await getDoc(artistRef);
   if (artistDoc.exists()) {
@@ -208,6 +212,23 @@ async function addCodeToUser(artistId: string, releaseId: string, code: string):
     const updatedRedeemed = [...artistData.redeemed, redeemed];
     await updateDoc(artistRef, { redeemed: updatedRedeemed });
   }
+}
+
+async function getUserCodes(artistId: string): Promise<ReleaseProps[]> {
+  const artistRef = doc(db, "artists", artistId);
+  const artistDoc = await getDoc(artistRef);
+  if (artistDoc.exists()) {
+    const artistData = artistDoc.data() as ArtistProps;
+    const redeemed = artistData.redeemed;
+    const releaseIds = redeemed.map((r) => r.releaseId);
+    const releaseRefs = releaseIds.map((id) => doc(db, "releases", id));
+    const releaseDocs = await Promise.all(
+      releaseRefs.map((ref) => getDoc(ref))
+    );
+    const releases = releaseDocs.map((doc) => doc.data() as ReleaseProps);
+    return releases;
+  }
+  return [];
 }
 
 export {
@@ -224,5 +245,6 @@ export {
   getRelease,
   getCode,
   removeCode,
-  addCodeToUser
+  addCodeToUser,
+  getUserCodes,
 };
