@@ -8,6 +8,7 @@ type AlbumPageProps = {
 
 const AlbumPage: React.FC<AlbumPageProps> = ({ user }) => {
   const [release, setRelease] = useState<any>(null);
+  const [alreadyRedeemed, setAlreadyRedeemed] = useState<boolean>(false);
   const { releaseId } = useParams();
   const navigate = useNavigate();
 
@@ -48,6 +49,18 @@ const AlbumPage: React.FC<AlbumPageProps> = ({ user }) => {
     }
   }, [releaseId]);
 
+  useEffect(() => {
+    if (!user) return;
+    if (user.redeemed.length > 0) {
+      for (const release of user.redeemed) {
+        if (release.releaseId === releaseId) {
+          setAlreadyRedeemed(true);
+          break;
+        }
+      }
+    }
+  }, [user, releaseId]);
+
   return (
     <div className="flex flex-col items-center h-screen w-full">
       <h1 className="text-6xl m-5 mx-auto font-bold mt-[7%]">
@@ -73,12 +86,15 @@ const AlbumPage: React.FC<AlbumPageProps> = ({ user }) => {
         <div
           className={
             user
-              ? "btn btn-primary btn-lg text-3xl"
+              ? alreadyRedeemed
+                ? "btn btn-primary btn-lg text-3xl btn-disabled"
+                : "btn btn-primary btn-lg text-3xl"
               : "btn btn-primary btn-lg text-3xl btn-disabled"
           }
           onClick={handleGetCode}
+          disabled={alreadyRedeemed}
         >
-          {user ? "Get Code!" : "Login to redeem code!"}
+          {user ? (alreadyRedeemed ? "Already Redeemed!" : "Get Code!") : "Login to redeem code!"}
         </div>
         <a
           className="btn btn-secondary btn-lg text-3xl"

@@ -1,4 +1,4 @@
-type RedeemedProps = {
+export type RedeemedProps = {
   releaseId: string;
   code: string;
 }

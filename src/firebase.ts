@@ -15,7 +15,7 @@ import {
   collection,
   updateDoc,
 } from "firebase/firestore";
-import { ArtistProps, ReleaseProps } from "./types";
+import { ArtistProps, ReleaseProps, RedeemedProps } from "./types";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAuOZMppl_i_395WP_5he4iDZ9CBl_QvmE",
@@ -214,19 +214,13 @@ async function addCodeToUser(
   }
 }
 
-async function getUserCodes(artistId: string): Promise<ReleaseProps[]> {
+async function getUserCodes(artistId: string): Promise<RedeemedProps[]> {
   const artistRef = doc(db, "artists", artistId);
   const artistDoc = await getDoc(artistRef);
   if (artistDoc.exists()) {
     const artistData = artistDoc.data() as ArtistProps;
     const redeemed = artistData.redeemed;
-    const releaseIds = redeemed.map((r) => r.releaseId);
-    const releaseRefs = releaseIds.map((id) => doc(db, "releases", id));
-    const releaseDocs = await Promise.all(
-      releaseRefs.map((ref) => getDoc(ref))
-    );
-    const releases = releaseDocs.map((doc) => doc.data() as ReleaseProps);
-    return releases;
+    return redeemed;
   }
   return [];
 }
