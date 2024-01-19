@@ -127,6 +127,7 @@ async function createUserDocument(uid: string): Promise<void> {
     name: "",
     location: "",
     releases: [],
+    redeemed: [],
   });
 }
 

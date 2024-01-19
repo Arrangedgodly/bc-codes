@@ -4,9 +4,10 @@ import { useParams, useNavigate } from "react-router-dom";
 
 type AlbumPageProps = {
   user: any;
+  fetchUser: () => void;
 };
 
-const AlbumPage: React.FC<AlbumPageProps> = ({ user }) => {
+const AlbumPage: React.FC<AlbumPageProps> = ({ user, fetchUser }) => {
   const [release, setRelease] = useState<any>(null);
   const [alreadyRedeemed, setAlreadyRedeemed] = useState<boolean>(false);
   const { releaseId } = useParams();
@@ -40,6 +41,7 @@ const AlbumPage: React.FC<AlbumPageProps> = ({ user }) => {
         codes: release.codes.filter((c: string) => c !== code),
       });
       await addCodeToUser(user.uid, releaseId, code);
+      fetchUser();
     }
   };
 

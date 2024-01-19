@@ -24,9 +24,13 @@ const App = () => {
 
   const fetchUser = async () => {
     const uid = localStorage.getItem("uid");
+    console.log(uid);
     if (uid) {
       const user = await getUserDocument(uid);
-      setUser(user);
+      console.log(user);
+      if (user) {
+        setUser(user);
+      }
     }
   };
 
@@ -105,7 +109,7 @@ const App = () => {
           element={<Profile user={user} setUser={setUser} />}
         />
         <Route path="/settings" element={<Settings user={user} />} />
-        <Route path="/release/:releaseId" element={<AlbumPage user={user} />} />
+        <Route path="/release/:releaseId" element={<AlbumPage user={user} fetchUser={fetchUser} />} />
       </Routes>
       <Footer />
     </div>
