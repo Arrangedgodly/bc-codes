@@ -169,6 +169,47 @@ async function getRelease(releaseId: string): Promise<ReleaseProps | null> {
   return null;
 }
 
+async function getCode(releaseId: string): Promise<string | null> {
+  const releaseRef = doc(db, "releases", releaseId);
+  const releaseDoc = await getDoc(releaseRef);
+
+  if (releaseDoc.exists()) {
+    const releaseData = releaseDoc.data() as ReleaseProps;
+    const codes = releaseData.codes;
+    
+    if (codes.length > 0) {
+      const code = codes[0];
+      return code;
+    }
+  }
+
+  return null;
+}
+
+async function removeCode(releaseId: string, code: string): Promise<void> {
+  const releaseRef = doc(db, "releases", releaseId);
+  const releaseDoc = await getDoc(releaseRef);
+
+  if (releaseDoc.exists()) {
+    const releaseData = releaseDoc.data() as ReleaseProps;
+    const codes = releaseData.codes;
+    const updatedCodes = codes.filter((c) => c !== code);
+
+    await updateDoc(releaseRef, { codes: updatedCodes });
+  }
+}
+
+async function addCodeToUser(artistId: string, releaseId: string, code: string): Promise<void> {
+  const artistRef = doc(db, "artists", artistId);
+  const artistDoc = await getDoc(artistRef);
+  if (artistDoc.exists()) {
+    const artistData = artistDoc.data() as ArtistProps;
+    const redeemed = { releaseId, code };
+    const updatedRedeemed = [...artistData.redeemed, redeemed];
+    await updateDoc(artistRef, { redeemed: updatedRedeemed });
+  }
+}
+
 export {
   app,
   db,
@@ -181,4 +222,7 @@ export {
   updateUserName,
   addRelease,
   getRelease,
+  getCode,
+  removeCode,
+  addCodeToUser
 };

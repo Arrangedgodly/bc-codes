@@ -18,7 +18,7 @@ const Artist: React.FC<ArtistProps> = ({ name, location, releases }) => {
     <div className="carousel-item h-screen w-full flex-col">
       <h1 className="text-6xl m-5 mx-auto font-bold mt-[7%]">{name}</h1>
       <p className="text-3xl m-7 mt-3 mx-auto italic">{location}</p>
-      <div className="flex flex-row gap-10 mx-auto justify-center">
+      <div className="flex flex-row gap-5 mx-auto justify-center">
         {sortedReleases.map((album) => (
           <Album
             key={album.name}

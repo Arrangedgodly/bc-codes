@@ -1,10 +1,15 @@
 import { useState, useEffect } from "react";
-import { getRelease } from "../firebase";
-import { useParams } from "react-router-dom";
+import { getRelease, getCode, removeCode, addCodeToUser } from "../firebase";
+import { useParams, useNavigate } from "react-router-dom";
 
-const AlbumPage = () => {
+type AlbumPageProps = {
+  user: any;
+};
+
+const AlbumPage: React.FC<AlbumPageProps> = ({ user }) => {
   const [release, setRelease] = useState<any>(null);
   const { releaseId } = useParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const getReleaseData = async () => {
@@ -23,8 +28,24 @@ const AlbumPage = () => {
     return new Date(date).toLocaleDateString("en-US", options);
   };
 
+  const handleGetCode = async () => {
+    if (!user) return;
+    if (releaseId === undefined) return;
+    const code = await getCode(releaseId || "");
+    if (code) {
+      await removeCode(releaseId || "", code);
+      setRelease({ ...release, codes: release.codes.filter((c: string) => c !== code) });
+      await addCodeToUser(user.uid, releaseId, code);
+    }
+  }
+
+  useEffect(() => {
+    if (releaseId === undefined) {
+      navigate("/");
+    }}, [releaseId]);
+
   return (
-    <div className="flex flex-col items-center justify-center h-screen w-full">
+    <div className="flex flex-col items-center h-screen w-full">
       <h1 className="text-6xl m-5 mx-auto font-bold mt-[7%]">
         {release?.name}
       </h1>
@@ -45,8 +66,8 @@ const AlbumPage = () => {
         Codes Available: {release?.codes.length}
       </p>
       <div className="flex flex-row gap-10 mx-auto justify-center">
-        <div className="btn btn-primary btn-lg text-3xl">Get Code!</div>
-        <div className="btn btn-secondary btn-lg text-3xl">Bandcamp</div>
+        <div className={user ? "btn btn-primary btn-lg text-3xl" : "btn btn-primary btn-lg text-3xl btn-disabled"} onClick={handleGetCode}>{user ? "Get Code!" : "Login to redeem code!"}</div>
+        <a className="btn btn-secondary btn-lg text-3xl" href={release?.link} target="_blank">Bandcamp</a>
         <div className="btn btn-accent btn-lg text-3xl">Notify Me</div>
       </div>
     </div>

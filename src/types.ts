@@ -1,8 +1,14 @@
+type RedeemedProps = {
+  releaseId: string;
+  code: string;
+}
+
 export type ArtistProps = {
   uid: string;
   name: string;
   location: string;
   releases: ReleaseProps[];
+  redeemed: RedeemedProps[];
 };
 
 export type AvatarProps = {

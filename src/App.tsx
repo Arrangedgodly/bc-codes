@@ -8,20 +8,25 @@ import AlbumPage from "./components/AlbumPage";
 import Footer from "./components/Footer";
 import { useState, useEffect } from "react";
 import { themeChange } from "theme-change";
-import { emailLogin, googleLogin, emailSignup, logout } from "./firebase";
+import { emailLogin, googleLogin, emailSignup, logout, getUserDocument } from "./firebase";
 import { Routes, Route } from "react-router-dom";
 import { ArtistProps } from "./types";
 
 const App = () => {
   const [theme, setTheme] = useState("dracula");
-  const [user, setUser] = useState<ArtistProps | null>(
-    localStorage.getItem("user")
-      ? JSON.parse(localStorage.getItem("user")!)
-      : null
-  );
+  const [user, setUser] = useState<ArtistProps | null>(null);
+
+  const fetchUser = async () => {
+    const uid = localStorage.getItem("uid");
+    if (uid) {
+      const user = await getUserDocument(uid);
+      setUser(user);
+    }
+  };
 
   useEffect(() => {
     themeChange(false);
+    fetchUser();
   }, []);
 
   const handleThemeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -31,26 +36,32 @@ const App = () => {
 
   const handleEmailLogin = async (email: string, password: string) => {
     const user = await emailLogin(email, password);
+    if (user) {
+    localStorage.setItem("uid", JSON.stringify(user.uid));
     setUser(user);
-    localStorage.setItem("user", JSON.stringify(user));
+    }
   };
 
   const handleGoogleLogin = async () => {
     const user = await googleLogin();
-    setUser(user);
-    localStorage.setItem("user", JSON.stringify(user));
+    if (user) {
+      localStorage.setItem("uid", JSON.stringify(user.uid));
+      setUser(user);
+      }
   };
 
   const handleEmailSignup = async (email: string, password: string) => {
     const user = await emailSignup(email, password);
-    setUser(user);
-    localStorage.setItem("user", JSON.stringify(user));
+    if (user) {
+      localStorage.setItem("uid", JSON.stringify(user.uid));
+      setUser(user);
+      }
   };
 
   const handleLogout = async () => {
     await logout();
     setUser(null);
-    localStorage.removeItem("user");
+    localStorage.removeItem("uid");
   };
 
   return (
@@ -88,7 +99,7 @@ const App = () => {
           element={<Profile user={user} setUser={setUser} />}
         />
         <Route path="/settings" element={<Settings user={user} />} />
-        <Route path="/release/:releaseId" element={<AlbumPage />} />
+        <Route path="/release/:releaseId" element={<AlbumPage user={user} />} />
       </Routes>
       <Footer />
     </div>
