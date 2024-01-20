@@ -4,7 +4,7 @@ const date = new Date().getFullYear();
 
 const Footer = () => {
   return (
-    <div className="footer items-center bg-neutral text-neutral-content fixed bottom-0 p-2 text-lg">
+    <div className="footer items-center bg-neutral text-neutral-content fixed bottom-0 p-2 text-lg z-50">
       <aside>
         <p className="p-1 text-sm">
           Copyright © {date} - All rights reserved by Arranged Godly

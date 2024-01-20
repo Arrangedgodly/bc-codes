@@ -27,9 +27,6 @@ const Avatar: React.FC<AvatarProps> = ({ user, handleLogout }) => {
               <Link to="/profile">Profile</Link>
             </li>
             <li className="mx-auto">
-              <Link to="/settings">Settings</Link>
-            </li>
-            <li className="mx-auto">
               <Link to="/" onClick={handleLogout}>
                 Logout
               </Link>

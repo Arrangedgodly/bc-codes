@@ -8,6 +8,7 @@ import {
 } from "../firebase";
 import NewRelease from "./NewRelease";
 import Release from "./Release";
+import RedeemedRelease from "./RedeemedRelease";
 
 type ProfileProps = {
   user: any;
@@ -16,11 +17,12 @@ type ProfileProps = {
 
 const Profile: React.FC<ProfileProps> = ({ user, setUser }) => {
   const navigate = useNavigate();
-  const [artistName, setArtistName] = useState<string>(user.name);
+  const [artistName, setArtistName] = useState<string>(user?.name);
   const [newArtistName, setNewArtistName] = useState<boolean>(false);
-  const [location, setLocation] = useState<string>(user.location);
+  const [location, setLocation] = useState<string>(user?.location);
   const [newLocation, setNewLocation] = useState<boolean>(false);
   const [releases, setReleases] = useState<any[]>([]);
+  const [redeemed, setRedeemed] = useState<any[]>([]);
 
   useEffect(() => {
     if (!user) {
@@ -73,10 +75,24 @@ const Profile: React.FC<ProfileProps> = ({ user, setUser }) => {
     };
 
     fetchReleases();
-  }, [user.releases]);
+  }, [user?.releases]);
+
+  useEffect(() => {
+    const fetchRedeemed = async () => {
+      const redeemedData = await Promise.all(
+        user.redeemed.map(async (redeemedItem: any) => {
+          const release = await getRelease(redeemedItem.releaseId);
+          return { ...release, code: redeemedItem.code };
+        })
+      );
+      setRedeemed(redeemedData);
+    };
+
+    fetchRedeemed();
+  }, [user?.redeemed]);
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen w-full">
+    <div className="flex flex-col items-center mt-20 min-h-screen w-full">
       <h1 className="text-6xl font-bold m-5">My Profile</h1>
       <div className="indicator m-3">
         <span className="indicator-item indicator-start badge badge-secondary text-xl">
@@ -118,6 +134,8 @@ const Profile: React.FC<ProfileProps> = ({ user, setUser }) => {
           onChange={handleLocationChange}
         />
       </div>
+      <div className="divider"></div>
+      <div className="flex items-center text-primary">
       <h2 className="text-4xl font-bold m-5">My Releases</h2>
       {releases && (
         <div className="flex items-center justify-center">
@@ -129,7 +147,19 @@ const Profile: React.FC<ProfileProps> = ({ user, setUser }) => {
       <label htmlFor="new_release" className="btn btn-primary btn-lg text-xl">
         + New Release
       </label>
+      </div>
       <NewRelease user={user} setUser={setUser} />
+      <div className="divider"></div>
+      {redeemed && (
+        <div className="flex items-center text-accent">
+          <h2 className="text-4xl font-bold m-5">My Redeemed Releases</h2>
+          <div className="flex items-center justify-center">
+            {redeemed.map((release: any) => (
+              <RedeemedRelease release={release} key={release.name} />
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

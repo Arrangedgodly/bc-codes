@@ -17,21 +17,22 @@ import {
 } from "./firebase";
 import { Routes, Route } from "react-router-dom";
 import { ArtistProps } from "./types";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 const App = () => {
   const [theme, setTheme] = useState("dracula");
   const [user, setUser] = useState<ArtistProps | null>(null);
 
   const fetchUser = async () => {
-    const uid = localStorage.getItem("uid");
-    console.log(uid);
-    if (uid) {
-      const user = await getUserDocument(uid);
-      console.log(user);
+    const auth = getAuth();
+    onAuthStateChanged(auth, async (user) => {
       if (user) {
-        setUser(user);
+        const userDocument = await getUserDocument(user.uid);
+        if (userDocument) {
+          setUser(userDocument);
+        }
       }
-    }
+    });
   };
 
   useEffect(() => {
@@ -47,7 +48,6 @@ const App = () => {
   const handleEmailLogin = async (email: string, password: string) => {
     const user = await emailLogin(email, password);
     if (user) {
-      localStorage.setItem("uid", JSON.stringify(user.uid));
       setUser(user);
     }
   };
@@ -55,7 +55,6 @@ const App = () => {
   const handleGoogleLogin = async () => {
     const user = await googleLogin();
     if (user) {
-      localStorage.setItem("uid", JSON.stringify(user.uid));
       setUser(user);
     }
   };
@@ -63,7 +62,6 @@ const App = () => {
   const handleEmailSignup = async (email: string, password: string) => {
     const user = await emailSignup(email, password);
     if (user) {
-      localStorage.setItem("uid", JSON.stringify(user.uid));
       setUser(user);
     }
   };
@@ -109,7 +107,10 @@ const App = () => {
           element={<Profile user={user} setUser={setUser} />}
         />
         <Route path="/settings" element={<Settings user={user} />} />
-        <Route path="/release/:releaseId" element={<AlbumPage user={user} fetchUser={fetchUser} />} />
+        <Route
+          path="/release/:releaseId"
+          element={<AlbumPage user={user} fetchUser={fetchUser} />}
+        />
       </Routes>
       <Footer />
     </div>
