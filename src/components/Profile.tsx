@@ -92,7 +92,7 @@ const Profile: React.FC<ProfileProps> = ({ user, setUser }) => {
   }, [user?.redeemed]);
 
   return (
-    <div className="flex flex-col items-center mt-20 min-h-screen w-full">
+    <div className="flex flex-col items-center mt-20 min-h-[95vh] w-full">
       <h1 className="text-6xl font-bold m-5">My Profile</h1>
       <div className="indicator m-3">
         <span className="indicator-item indicator-start badge badge-secondary text-xl">

@@ -64,7 +64,7 @@ const AlbumPage: React.FC<AlbumPageProps> = ({ user, fetchUser }) => {
   }, [user, releaseId]);
 
   return (
-    <div className="flex flex-col items-center h-screen w-full">
+    <div className="flex flex-col items-center min-h-screen w-full">
       <h1 className="text-6xl m-5 mx-auto font-bold mt-[7%]">
         {release?.name}
       </h1>
@@ -78,6 +78,7 @@ const AlbumPage: React.FC<AlbumPageProps> = ({ user, fetchUser }) => {
       <p className="text-3xl m-7 mt-3 mx-auto">
         {release?.releaseType} by {release?.artist}
       </p>
+      <p className="text-2xl m-7 mt-3 mx-auto">{release?.about}</p>
       <p className="text-3xl m-7 mt-3 mx-auto italic">
         Released: {convertDate(release?.releaseDate)}
       </p>
