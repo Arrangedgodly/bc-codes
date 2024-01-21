@@ -26,7 +26,7 @@ const Profile: React.FC<ProfileProps> = ({ user, setUser }) => {
 
   useEffect(() => {
     if (!user) {
-      navigate("/login");
+      navigate("/");
     }
   }, [user]);
 
@@ -51,7 +51,7 @@ const Profile: React.FC<ProfileProps> = ({ user, setUser }) => {
   };
 
   useEffect(() => {
-    if (artistName !== user.name) {
+    if (artistName !== user?.name) {
       setNewArtistName(true);
     } else {
       setNewArtistName(false);
@@ -59,7 +59,7 @@ const Profile: React.FC<ProfileProps> = ({ user, setUser }) => {
   }, [artistName]);
 
   useEffect(() => {
-    if (location !== user.location) {
+    if (location !== user?.location) {
       setNewLocation(true);
     } else {
       setNewLocation(false);

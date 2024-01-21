@@ -69,7 +69,6 @@ const App = () => {
   const handleLogout = async () => {
     await logout();
     setUser(null);
-    localStorage.removeItem("uid");
   };
 
   return (
