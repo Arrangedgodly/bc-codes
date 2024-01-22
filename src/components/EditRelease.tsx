@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import validator from "validator";
+import { updateRelease } from "../firebase";
 
 const EditRelease = ({ release }: any) => {
   const [image, setImage] = useState<string>(release?.image);
@@ -16,6 +17,7 @@ const EditRelease = ({ release }: any) => {
   const [codes, setCodes] = useState<string[]>(release?.codes);
   const [codeCount, setCodeCount] = useState<number>(release?.codes.length);
   const [canSubmit, setCanSubmit] = useState<boolean>(false);
+  const [newRelease, setNewRelease] = useState<any>(null);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!validator.isURL(e.target.value)) {
@@ -118,6 +120,26 @@ const EditRelease = ({ release }: any) => {
   useEffect(() => {
     updateModalState();
   }, [release]);
+
+  const handleEditRelease = async (release: any) => {
+    await updateRelease(release.id, release);
+  }
+
+  useEffect(() => {
+    const newRelease = {
+      id: release.id,
+      name,
+      codes,
+      about,
+      redeemURL,
+      artist: artist ? artist : release.artist,
+      link,
+      image,
+      releaseDate,
+      releaseType,
+    };
+    setNewRelease(newRelease);
+    }, [image, name, artist, about, redeemURL, link, releaseDate, releaseType, codes]);
 
   return (
 <>
@@ -268,7 +290,7 @@ const EditRelease = ({ release }: any) => {
             <label
               htmlFor="edit_release"
               className={canSubmit ? "btn btn-primary btn-lg text-2xl w-full" : "btn btn-primary btn-disabled btn-lg text-2xl w-full"}
-              onClick={() => {}}
+              onClick={() => handleEditRelease(newRelease)}
             >
               Save Release
             </label>
