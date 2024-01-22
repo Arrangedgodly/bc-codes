@@ -1,26 +1,20 @@
 import { useState, useEffect } from "react";
 import validator from "validator";
-import { addRelease, getUserDocument } from "../firebase";
 
-type NewReleaseProps = {
-  user: any;
-  setUser: any;
-};
-
-const NewRelease: React.FC<NewReleaseProps> = ({ user, setUser }) => {
-  const [image, setImage] = useState<string>("");
+const EditRelease = ({ release }: any) => {
+  const [image, setImage] = useState<string>(release?.image);
   const [validImage, setValidImage] = useState<boolean>(false);
-  const [name, setName] = useState<string>("");
-  const [artist, setArtist] = useState<string>("");
-  const [about, setAbout] = useState<string>("");
-  const [redeemURL, setRedeemURL] = useState<string>("");
+  const [name, setName] = useState<string>(release?.name);
+  const [artist, setArtist] = useState<string>(release?.artist);
+  const [about, setAbout] = useState<string>(release?.about);
+  const [redeemURL, setRedeemURL] = useState<string>(release?.redeemURL);
   const [validRedeemURL, setValidRedeemURL] = useState<boolean>(false);
-  const [link, setlink] = useState<string>("");
+  const [link, setlink] = useState<string>(release?.link);
   const [validlink, setValidlink] = useState<boolean>(false);
-  const [releaseDate, setReleaseDate] = useState<string>("");
-  const [releaseType, setReleaseType] = useState<string>("");
-  const [codes, setCodes] = useState<string[]>([]);
-  const [codeCount, setCodeCount] = useState<number>(0);
+  const [releaseDate, setReleaseDate] = useState<string>(release?.releaseDate);
+  const [releaseType, setReleaseType] = useState<string>(release?.releaseType);
+  const [codes, setCodes] = useState<string[]>(release?.codes);
+  const [codeCount, setCodeCount] = useState<number>(release?.codes.length);
   const [canSubmit, setCanSubmit] = useState<boolean>(false);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -85,32 +79,6 @@ const NewRelease: React.FC<NewReleaseProps> = ({ user, setUser }) => {
     }
   };
 
-  const handleAddRelease = async () => {
-    const release = {
-      name,
-      codes,
-      about,
-      redeemURL,
-      artist: artist ? artist : user.name,
-      link,
-      image,
-      releaseDate,
-      releaseType,
-    };
-    await addRelease(user.uid, release);
-    setImage("");
-    setName("");
-    setArtist("");
-    setAbout("");
-    setRedeemURL("");
-    setlink("");
-    setReleaseDate("");
-    setReleaseType("");
-    setCodes([]);
-    setCodeCount(0);
-    setUser(await getUserDocument(user.uid));
-  };
-
   useEffect(() => {
     setCodeCount(codes.length);
   }, [codes]);
@@ -126,6 +94,19 @@ const NewRelease: React.FC<NewReleaseProps> = ({ user, setUser }) => {
     return requiredFields.every((field) => field !== "");
   };
 
+  const updateModalState = () => {
+    setImage(release.image);
+    setName(release.name);
+    setArtist(release.artist);
+    setAbout(release.about);
+    setRedeemURL(release.redeemURL);
+    setlink(release.link);
+    setReleaseDate(release.releaseDate);
+    setReleaseType(release.releaseType);
+    setCodes(release.codes);
+    setCodeCount(release.codes.length);
+  }
+
   useEffect(() => {
     if (areRequiredFieldsChanged()) {
       setCanSubmit(true);
@@ -134,9 +115,13 @@ const NewRelease: React.FC<NewReleaseProps> = ({ user, setUser }) => {
     }
   }, [image, redeemURL, link, releaseDate, releaseType]);
 
+  useEffect(() => {
+    updateModalState();
+  }, [release]);
+
   return (
-    <>
-      <input type="checkbox" id="new_release" className="modal-toggle" />
+<>
+      <input type="checkbox" id="edit_release" className="modal-toggle" />
       <div className="modal" role="dialog">
         <div className="modal-box glass">
           <h3 className="text-5xl font-bold">Add New Release</h3>
@@ -281,20 +266,20 @@ const NewRelease: React.FC<NewReleaseProps> = ({ user, setUser }) => {
           </div>
           <div className="modal-action">
             <label
-              htmlFor="new_release"
+              htmlFor="edit_release"
               className={canSubmit ? "btn btn-primary btn-lg text-2xl w-full" : "btn btn-primary btn-disabled btn-lg text-2xl w-full"}
-              onClick={handleAddRelease}
+              onClick={() => {}}
             >
               Add Release
             </label>
           </div>
         </div>
-        <label className="modal-backdrop" htmlFor="new_release">
+        <label className="modal-backdrop" htmlFor="edit_release">
           Close
         </label>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default NewRelease;
+export default EditRelease;

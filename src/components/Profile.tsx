@@ -5,10 +5,13 @@ import {
   updateUserName,
   updateUserLocation,
   getRelease,
+  removeRelease
 } from "../firebase";
 import NewRelease from "./NewRelease";
 import Release from "./Release";
 import RedeemedRelease from "./RedeemedRelease";
+import EditRelease from "./EditRelease";
+import DeletePopup from "./DeletePopup";
 
 type ProfileProps = {
   user: any;
@@ -23,6 +26,7 @@ const Profile: React.FC<ProfileProps> = ({ user, setUser }) => {
   const [newLocation, setNewLocation] = useState<boolean>(false);
   const [releases, setReleases] = useState<any[]>([]);
   const [redeemed, setRedeemed] = useState<any[]>([]);
+  const [activeRelease, setActiveRelease] = useState<any>(null);
 
   useEffect(() => {
     if (!user) {
@@ -49,6 +53,12 @@ const Profile: React.FC<ProfileProps> = ({ user, setUser }) => {
     setNewLocation(false);
     setUser(await getUserDocument(user.uid));
   };
+
+  const deleteRelease = async () => {
+    await removeRelease(activeRelease.id)
+    setUser(await getUserDocument(user.uid));
+    setActiveRelease(null);
+  }
 
   useEffect(() => {
     if (artistName !== user?.name) {
@@ -136,19 +146,21 @@ const Profile: React.FC<ProfileProps> = ({ user, setUser }) => {
       </div>
       <div className="divider"></div>
       <div className="flex items-center text-primary">
-      <h2 className="text-4xl font-bold m-5">My Releases</h2>
-      {releases && (
-        <div className="flex items-center justify-center">
-          {releases.map((release: any) => (
-            <Release release={release} key={release.name} />
-          ))}
-        </div>
-      )}
-      <label htmlFor="new_release" className="btn btn-primary btn-lg text-xl">
-        + New Release
-      </label>
+        <h2 className="text-4xl font-bold m-5">My Releases</h2>
+        {releases && (
+          <div className="flex items-center justify-center">
+            {releases.map((release: any) => (
+              <Release release={release} key={release.name} setActiveRelease={setActiveRelease} />
+            ))}
+          </div>
+        )}
+        <label htmlFor="new_release" className="btn btn-primary btn-lg text-xl">
+          + New Release
+        </label>
       </div>
       <NewRelease user={user} setUser={setUser} />
+      {activeRelease && <EditRelease release={activeRelease} />}
+      {activeRelease && <DeletePopup deleteRelease={deleteRelease} />}
       <div className="divider"></div>
       {redeemed && (
         <div className="flex items-center text-accent">

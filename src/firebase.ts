@@ -12,6 +12,7 @@ import {
   setDoc,
   getDoc,
   addDoc,
+  deleteDoc,
   collection,
   updateDoc,
 } from "firebase/firestore";
@@ -161,6 +162,14 @@ async function addRelease(
   }
 }
 
+async function updateRelease(
+  releaseId: string,
+  releaseData: ReleaseProps
+): Promise<void> {
+  const releaseRef = doc(db, "releases", releaseId);
+  await updateDoc(releaseRef, releaseData);
+}
+
 async function getRelease(releaseId: string): Promise<ReleaseProps | null> {
   const releaseRef = doc(db, "releases", releaseId);
   const releaseDoc = await getDoc(releaseRef);
@@ -168,6 +177,11 @@ async function getRelease(releaseId: string): Promise<ReleaseProps | null> {
     return releaseDoc.data() as ReleaseProps;
   }
   return null;
+}
+
+async function removeRelease(releaseId: string): Promise<void> {
+  const releaseRef = doc(db, "releases", releaseId);
+  await deleteDoc(releaseRef);
 }
 
 async function getCode(releaseId: string): Promise<string | null> {
@@ -237,7 +251,9 @@ export {
   updateUserLocation,
   updateUserName,
   addRelease,
+  updateRelease,
   getRelease,
+  removeRelease,
   getCode,
   removeCode,
   addCodeToUser,

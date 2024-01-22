@@ -64,7 +64,7 @@ const AlbumPage: React.FC<AlbumPageProps> = ({ user, fetchUser }) => {
   }, [user, releaseId]);
 
   return (
-    <div className="flex flex-col items-center min-h-screen w-full">
+    <div className="flex flex-col items-center min-h-[95vh] w-full">
       <h1 className="text-6xl m-5 mx-auto font-bold mt-[7%]">
         {release?.name}
       </h1>
@@ -75,17 +75,17 @@ const AlbumPage: React.FC<AlbumPageProps> = ({ user, fetchUser }) => {
           className="w-[300px] h-[300px] object-cover rounded-xl"
         />
       </div>
-      <p className="text-3xl m-7 mt-3 mx-auto">
+      <p className="text-3xl m-7 my-1 mx-auto">
         {release?.releaseType} by {release?.artist}
       </p>
-      <p className="text-2xl m-7 mt-3 mx-auto">{release?.about}</p>
-      <p className="text-3xl m-7 mt-3 mx-auto italic">
+      <p className="text-3xl m-7 my-1 mx-auto italic">
         Released: {convertDate(release?.releaseDate)}
       </p>
-      <p className="text-5xl m-7 mt-3 mx-auto">
+      <p className="text-lg m-7 my-1 mx-auto w-[75%] text-center">{release?.about}</p>
+      <p className="text-5xl my-2 mx-auto">
         Codes Available: {release?.codes.length}
       </p>
-      <div className="flex flex-row gap-10 mx-auto justify-center">
+      <div className="flex flex-row gap-10 mx-auto justify-center my-5">
         <div
           className={
             user
