@@ -3,14 +3,14 @@ import validator from "validator";
 
 const EditRelease = ({ release }: any) => {
   const [image, setImage] = useState<string>(release?.image);
-  const [validImage, setValidImage] = useState<boolean>(false);
+  const [validImage, setValidImage] = useState<boolean>(validator.isURL(release?.image));
   const [name, setName] = useState<string>(release?.name);
   const [artist, setArtist] = useState<string>(release?.artist);
   const [about, setAbout] = useState<string>(release?.about);
   const [redeemURL, setRedeemURL] = useState<string>(release?.redeemURL);
-  const [validRedeemURL, setValidRedeemURL] = useState<boolean>(false);
+  const [validRedeemURL, setValidRedeemURL] = useState<boolean>(validator.isURL(release?.redeemURL));
   const [link, setlink] = useState<string>(release?.link);
-  const [validlink, setValidlink] = useState<boolean>(false);
+  const [validlink, setValidlink] = useState<boolean>(validator.isURL(release?.link));
   const [releaseDate, setReleaseDate] = useState<string>(release?.releaseDate);
   const [releaseType, setReleaseType] = useState<string>(release?.releaseType);
   const [codes, setCodes] = useState<string[]>(release?.codes);
@@ -124,7 +124,7 @@ const EditRelease = ({ release }: any) => {
       <input type="checkbox" id="edit_release" className="modal-toggle" />
       <div className="modal" role="dialog">
         <div className="modal-box glass">
-          <h3 className="text-5xl font-bold">Add New Release</h3>
+          <h3 className="text-5xl font-bold">Edit Release</h3>
           <p className="text-2xl">* denotes required fields</p>
           {image && (
             <img src={image} alt={name} className="w-full my-2" />
@@ -270,7 +270,7 @@ const EditRelease = ({ release }: any) => {
               className={canSubmit ? "btn btn-primary btn-lg text-2xl w-full" : "btn btn-primary btn-disabled btn-lg text-2xl w-full"}
               onClick={() => {}}
             >
-              Add Release
+              Save Release
             </label>
           </div>
         </div>

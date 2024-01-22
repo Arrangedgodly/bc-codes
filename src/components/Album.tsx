@@ -47,20 +47,20 @@ const Album: React.FC<AlbumProps> = ({
           <a
             href={link}
             target="_blank"
-            className="btn btn-secondary w-[45%] mx-auto text-xl"
+            className="btn btn-secondary w-full mx-auto text-xl"
           >
             Bandcamp
           </a>
           {codesAvailable > 0 ? (
             <button
-              className="btn btn-accent w-[45%] mx-auto text-xl"
+              className="btn btn-accent w-full mx-auto text-xl"
               onClick={navigateToRelease}
             >
               Get Code
             </button>
           ) : (
             <button
-              className="btn btn-tertiary w-[45%] mx-auto text-xl"
+              className="btn btn-tertiary w-full mx-auto text-xl"
               onClick={navigateToRelease}
             >
               Learn More

@@ -89,7 +89,7 @@ const AlbumPage: React.FC<AlbumPageProps> = ({ user, fetchUser }) => {
         <div
           className={
             user
-              ? alreadyRedeemed
+              ? alreadyRedeemed || release?.codes.length === 0
                 ? "btn btn-primary btn-lg text-3xl btn-disabled"
                 : "btn btn-primary btn-lg text-3xl"
               : "btn btn-primary btn-lg text-3xl btn-disabled"
