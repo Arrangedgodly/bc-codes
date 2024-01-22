@@ -7,7 +7,7 @@ const Footer = () => {
     <div className="footer items-center bg-neutral text-neutral-content relative bottom-0 p-2 text-lg z-50">
       <aside>
         <p className="p-1 text-sm">
-          Copyright © {date} - All rights reserved by Arranged Godly
+          Copyright © {date} - All rights reserved by CodeFanatics.app / Arranged Godly
         </p>
       </aside>
       <div className="grid-flow-col md:place-self-center md:justify-self-end">
