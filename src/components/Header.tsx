@@ -1,8 +1,7 @@
 import ThemeChanger from "./ThemeChanger";
 import Avatar from "./Avatar";
 import { Link } from "react-router-dom";
-import { BsMusicPlayerFill } from "react-icons/bs";
-import { LuHardDriveDownload } from "react-icons/lu";
+import Logo from '../codefanatics.svg';
 
 type HeaderProps = {
   theme: string;
@@ -20,9 +19,8 @@ const Header: React.FC<HeaderProps> = ({
   return (
     <header className="navbar bg-neutral text-neutral-content fixed top-0">
       <div className="navbar-start">
-        <Link className="text-3xl ml-5" to="/">
-          <BsMusicPlayerFill className="inline-block ml-1" />
-          <LuHardDriveDownload className="inline-block mr-2" />
+        <Link className="text-3xl ml-2 flex items-center" to="/">
+          <img src={Logo} alt="Code Fanatics" className="w-10 h-10 mr-2" />
           Code Fanatics
         </Link>
       </div>
