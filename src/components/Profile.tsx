@@ -1,11 +1,10 @@
-import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import {
   getUserDocument,
   updateUserName,
   updateUserLocation,
   getRelease,
-  removeRelease
+  removeRelease,
 } from "../firebase";
 import NewRelease from "./NewRelease";
 import Release from "./Release";
@@ -19,7 +18,6 @@ type ProfileProps = {
 };
 
 const Profile: React.FC<ProfileProps> = ({ user, setUser }) => {
-  const navigate = useNavigate();
   const [artistName, setArtistName] = useState<string>(user?.name);
   const [newArtistName, setNewArtistName] = useState<boolean>(false);
   const [location, setLocation] = useState<string>(user?.location);
@@ -27,12 +25,6 @@ const Profile: React.FC<ProfileProps> = ({ user, setUser }) => {
   const [releases, setReleases] = useState<any[]>([]);
   const [redeemed, setRedeemed] = useState<any[]>([]);
   const [activeRelease, setActiveRelease] = useState<any>(null);
-
-  useEffect(() => {
-    if (!user) {
-      navigate("/");
-    }
-  }, [user]);
 
   const handleArtistNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setArtistName(e.target.value);
@@ -55,10 +47,10 @@ const Profile: React.FC<ProfileProps> = ({ user, setUser }) => {
   };
 
   const deleteRelease = async () => {
-    await removeRelease(activeRelease.id)
+    await removeRelease(activeRelease.id);
     setUser(await getUserDocument(user.uid));
     setActiveRelease(null);
-  }
+  };
 
   useEffect(() => {
     if (artistName !== user?.name) {
@@ -78,6 +70,7 @@ const Profile: React.FC<ProfileProps> = ({ user, setUser }) => {
 
   useEffect(() => {
     const fetchReleases = async () => {
+      if (!user?.releases) return;
       const releaseData = await Promise.all(
         user.releases.map((releaseId: string) => getRelease(releaseId))
       );
@@ -89,6 +82,7 @@ const Profile: React.FC<ProfileProps> = ({ user, setUser }) => {
 
   useEffect(() => {
     const fetchRedeemed = async () => {
+      if (!user?.redeemed) return;
       const redeemedData = await Promise.all(
         user.redeemed.map(async (redeemedItem: any) => {
           const release = await getRelease(redeemedItem.releaseId);
@@ -100,6 +94,13 @@ const Profile: React.FC<ProfileProps> = ({ user, setUser }) => {
 
     fetchRedeemed();
   }, [user?.redeemed]);
+
+  useEffect(() => {
+    if (user) {
+      setArtistName(user.name);
+      setLocation(user.location);
+    }
+  }, [user]);
 
   return (
     <div className="flex flex-col items-center mt-20 min-h-[95vh] w-full">
@@ -150,7 +151,11 @@ const Profile: React.FC<ProfileProps> = ({ user, setUser }) => {
         {releases && (
           <div className="flex items-center justify-center">
             {releases.map((release: any) => (
-              <Release release={release} key={release.name} setActiveRelease={setActiveRelease} />
+              <Release
+                release={release}
+                key={release.id}
+                setActiveRelease={setActiveRelease}
+              />
             ))}
           </div>
         )}

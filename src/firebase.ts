@@ -174,7 +174,7 @@ async function getRelease(releaseId: string): Promise<ReleaseProps | null> {
   const releaseRef = doc(db, "releases", releaseId);
   const releaseDoc = await getDoc(releaseRef);
   if (releaseDoc.exists()) {
-    return releaseDoc.data() as ReleaseProps;
+    return { id: releaseId, ...releaseDoc.data()} as ReleaseProps;
   }
   return null;
 }

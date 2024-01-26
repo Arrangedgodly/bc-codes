@@ -81,7 +81,9 @@ const AlbumPage: React.FC<AlbumPageProps> = ({ user, fetchUser }) => {
       <p className="text-3xl m-7 my-1 mx-auto italic">
         Released: {convertDate(release?.releaseDate)}
       </p>
-      <p className="text-lg m-7 my-1 mx-auto w-[75%] text-center">{release?.about}</p>
+      <p className="text-2xl m-7 my-1 mx-auto w-[50%] text-center">
+        {release?.about}
+      </p>
       <p className="text-5xl my-2 mx-auto">
         Codes Available: {release?.codes.length}
       </p>
@@ -96,7 +98,11 @@ const AlbumPage: React.FC<AlbumPageProps> = ({ user, fetchUser }) => {
           }
           onClick={handleGetCode}
         >
-          {user ? (alreadyRedeemed ? "Already Redeemed!" : "Get Code!") : "Login to redeem code!"}
+          {user
+            ? alreadyRedeemed
+              ? "Already Redeemed!"
+              : "Get Code!"
+            : "Login to redeem code!"}
         </div>
         <a
           className="btn btn-secondary btn-lg text-3xl"

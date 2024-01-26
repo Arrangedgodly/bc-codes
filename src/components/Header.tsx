@@ -1,7 +1,7 @@
 import ThemeChanger from "./ThemeChanger";
 import Avatar from "./Avatar";
 import { Link } from "react-router-dom";
-import Logo from '../codefanatics.svg';
+import Logo from "../codefanatics.svg";
 
 type HeaderProps = {
   theme: string;

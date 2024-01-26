@@ -4,14 +4,16 @@ import { updateRelease } from "../firebase";
 
 const EditRelease = ({ release }: any) => {
   const [image, setImage] = useState<string>(release?.image);
-  const [validImage, setValidImage] = useState<boolean>(validator.isURL(release?.image));
+  const [validImage, setValidImage] = useState<boolean>(
+    validator.isURL(release?.image)
+  );
   const [name, setName] = useState<string>(release?.name);
   const [artist, setArtist] = useState<string>(release?.artist);
   const [about, setAbout] = useState<string>(release?.about);
   const [redeemURL, setRedeemURL] = useState<string>(release?.redeemURL);
-  const [validRedeemURL, setValidRedeemURL] = useState<boolean>(validator.isURL(release?.redeemURL));
+  const [validRedeemURL, setValidRedeemURL] = useState<boolean>(false);
   const [link, setlink] = useState<string>(release?.link);
-  const [validlink, setValidlink] = useState<boolean>(validator.isURL(release?.link));
+  const [validlink, setValidlink] = useState<boolean>(false);
   const [releaseDate, setReleaseDate] = useState<string>(release?.releaseDate);
   const [releaseType, setReleaseType] = useState<string>(release?.releaseType);
   const [codes, setCodes] = useState<string[]>(release?.codes);
@@ -20,7 +22,9 @@ const EditRelease = ({ release }: any) => {
   const [newRelease, setNewRelease] = useState<any>(null);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!validator.isURL(e.target.value)) {
+    if (e.target.value === "") {
+      setValidImage(false);
+    } else if (!validator.isURL(e.target.value)) {
       setValidImage(false);
     } else {
       setValidImage(true);
@@ -37,7 +41,9 @@ const EditRelease = ({ release }: any) => {
   };
 
   const handlelinkChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!validator.isURL(e.target.value)) {
+    if (e.target.value === "") {
+      setValidlink(false);
+    } else if (!validator.isURL(e.target.value)) {
       setValidlink(false);
     } else {
       setValidlink(true);
@@ -46,7 +52,9 @@ const EditRelease = ({ release }: any) => {
   };
 
   const handleRedeemURLChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!validator.isURL(e.target.value)) {
+    if (e.target.value === "") {
+      setValidRedeemURL(false);
+    } else if (!validator.isURL(e.target.value)) {
       setValidRedeemURL(false);
     } else {
       setValidRedeemURL(true);
@@ -86,28 +94,22 @@ const EditRelease = ({ release }: any) => {
   }, [codes]);
 
   const areRequiredFieldsChanged = (): boolean => {
-    const requiredFields = [
-      image,
-      redeemURL,
-      link,
-      releaseDate,
-      releaseType,
-    ];
+    const requiredFields = [image, redeemURL, link, releaseDate, releaseType];
     return requiredFields.every((field) => field !== "");
   };
 
   const updateModalState = () => {
-    setImage(release.image);
-    setName(release.name);
-    setArtist(release.artist);
-    setAbout(release.about);
-    setRedeemURL(release.redeemURL);
-    setlink(release.link);
-    setReleaseDate(release.releaseDate);
-    setReleaseType(release.releaseType);
-    setCodes(release.codes);
-    setCodeCount(release.codes.length);
-  }
+    setImage(release?.image);
+    setName(release?.name);
+    setArtist(release?.artist);
+    setAbout(release?.about);
+    setRedeemURL(release?.redeemURL);
+    setlink(release?.link);
+    setReleaseDate(release?.releaseDate);
+    setReleaseType(release?.releaseType);
+    setCodes(release?.codes);
+    setCodeCount(release?.codes.length);
+  };
 
   useEffect(() => {
     if (areRequiredFieldsChanged()) {
@@ -123,7 +125,7 @@ const EditRelease = ({ release }: any) => {
 
   const handleEditRelease = async (release: any) => {
     await updateRelease(release.id, release);
-  }
+  };
 
   useEffect(() => {
     const newRelease = {
@@ -139,18 +141,26 @@ const EditRelease = ({ release }: any) => {
       releaseType,
     };
     setNewRelease(newRelease);
-    }, [image, name, artist, about, redeemURL, link, releaseDate, releaseType, codes]);
+  }, [
+    image,
+    name,
+    artist,
+    about,
+    redeemURL,
+    link,
+    releaseDate,
+    releaseType,
+    codes,
+  ]);
 
   return (
-<>
+    <>
       <input type="checkbox" id="edit_release" className="modal-toggle" />
       <div className="modal" role="dialog">
         <div className="modal-box glass">
           <h3 className="text-5xl font-bold">Edit Release</h3>
           <p className="text-2xl">* denotes required fields</p>
-          {image && (
-            <img src={image} alt={name} className="w-full my-2" />
-          )}
+          {image && <img src={image} alt={name} className="w-full my-2" />}
           <div className="form-control my-2 w-full">
             <label className="label">
               <span className="label-text text-3xl">Image URL *</span>
@@ -289,7 +299,11 @@ const EditRelease = ({ release }: any) => {
           <div className="modal-action">
             <label
               htmlFor="edit_release"
-              className={canSubmit ? "btn btn-primary btn-lg text-2xl w-full" : "btn btn-primary btn-disabled btn-lg text-2xl w-full"}
+              className={
+                canSubmit
+                  ? "btn btn-primary btn-lg text-2xl w-full"
+                  : "btn btn-primary btn-disabled btn-lg text-2xl w-full"
+              }
               onClick={() => handleEditRelease(newRelease)}
             >
               Save Release
@@ -301,7 +315,7 @@ const EditRelease = ({ release }: any) => {
         </label>
       </div>
     </>
-  )
-}
+  );
+};
 
 export default EditRelease;

@@ -28,9 +28,9 @@ const App = () => {
     onAuthStateChanged(auth, async (user) => {
       if (user) {
         const userDocument = await getUserDocument(user.uid);
-        if (userDocument) {
-          setUser(userDocument);
-        }
+        setUser(userDocument);
+      } else {
+        setUser(null);
       }
     });
   };
@@ -46,24 +46,18 @@ const App = () => {
   };
 
   const handleEmailLogin = async (email: string, password: string) => {
-    const user = await emailLogin(email, password);
-    if (user) {
-      setUser(user);
-    }
+    const res = await emailLogin(email, password);
+    return res;
   };
 
   const handleGoogleLogin = async () => {
-    const user = await googleLogin();
-    if (user) {
-      setUser(user);
-    }
+    const res = await googleLogin();
+    return res;
   };
 
   const handleEmailSignup = async (email: string, password: string) => {
-    const user = await emailSignup(email, password);
-    if (user) {
-      setUser(user);
-    }
+    const res = await emailSignup(email, password);
+    return res;
   };
 
   const handleLogout = async () => {

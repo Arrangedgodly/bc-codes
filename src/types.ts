@@ -17,6 +17,7 @@ export type AvatarProps = {
 };
 
 export type ReleaseProps = {
+  id: string;
   name: string;
   about: string;
   artist: string;
