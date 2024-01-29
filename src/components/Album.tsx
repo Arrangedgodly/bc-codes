@@ -25,7 +25,7 @@ const Album: React.FC<AlbumProps> = ({
     navigate(`/release/${id}`);
   };
   return (
-    <div className="card w-1/4 max-w-[200px] bg-base-100 shadow-xl image-full m-3 indicator">
+    <div className="card w-1/5 bg-base-100 shadow-xl image-full m-3 indicator">
       {codesAvailable === 0 ? (
         <span className="code-indicator-error sub-text indicator-center indicator-bottom">
           No Codes Left!
