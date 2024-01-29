@@ -1,0 +1,27 @@
+.album-title {
+  @apply card-title m-auto text-xl md:text-2xl sm:text-4xl overflow-hidden;
+}
+
+.album-desc {
+  @apply m-auto text-sm md:text-lg sm:text-xl;
+}
+
+.code-button {
+ @apply btn btn-accent w-full mx-auto text-sm md:text-lg sm:text-xl btn-sm truncate;
+}
+
+.bandcamp-button {
+ @apply btn btn-secondary w-full mx-auto text-sm md:text-lg sm:text-xl btn-sm truncate;
+}
+
+.release-button {
+ @apply btn w-full mx-auto text-sm md:text-lg sm:text-xl btn-sm truncate;
+}
+
+.code-indicator {
+  @apply indicator-item badge badge-sm badge-success z-10 md:badge-md sm:badge-lg;
+}
+
+.code-indicator-error {
+  @apply indicator-item badge badge-sm badge-error z-10 md:badge-md sm:badge-lg;
+}

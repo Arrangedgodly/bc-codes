@@ -146,10 +146,10 @@ const Profile: React.FC<ProfileProps> = ({ user, setUser }) => {
         />
       </div>
       <div className="divider"></div>
-      <div className="flex items-center text-primary">
+      <div className="flex flex-col items-center text-primary mb-5">
         <h2 className="text-4xl font-bold m-5">My Releases</h2>
         {releases && (
-          <div className="flex items-center justify-center">
+          <div className="flex flex-wrap items-center justify-center">
             {releases.map((release: any) => (
               <Release
                 release={release}
@@ -168,9 +168,9 @@ const Profile: React.FC<ProfileProps> = ({ user, setUser }) => {
       {activeRelease && <DeletePopup deleteRelease={deleteRelease} />}
       <div className="divider"></div>
       {redeemed && (
-        <div className="flex items-center text-accent">
+        <div className="flex flex-col items-center text-accent mb-5">
           <h2 className="text-4xl font-bold m-5">My Redeemed Releases</h2>
-          <div className="flex items-center justify-center">
+          <div className="flex flex-wrap items-center justify-center">
             {redeemed.map((release: any) => (
               <RedeemedRelease release={release} key={release.name} />
             ))}

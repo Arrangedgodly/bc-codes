@@ -25,44 +25,34 @@ const Album: React.FC<AlbumProps> = ({
     navigate(`/release/${id}`);
   };
   return (
-    <div className="card w-[250px] bg-base-100 shadow-xl image-full m-5 indicator">
+    <div className="card w-1/4 max-w-[200px] bg-base-100 shadow-xl image-full m-3 indicator">
       {codesAvailable === 0 ? (
-        <span className="indicator-item indicator-center indicator-bottom badge badge-lg badge-error text-2xl z-10">
+        <span className="code-indicator-error sub-text indicator-center indicator-bottom">
           No Codes Left!
         </span>
       ) : (
-        <span className="indicator-item indicator-center indicator-bottom badge badge-lg badge-success text-2xl z-10">
+        <span className="code-indicator sub-text indicator-center indicator-bottom">
           {codesAvailable} Codes Available!
         </span>
       )}
       <figure>
         <img src={image} alt={name} />
       </figure>
-      <div className="justify-end card-body text-center">
-        <h2 className="card-title m-auto text-4xl">{name}</h2>
-        <p className="text-xl">
+      <div className="justify-end card-body text-center p-3">
+        <h2 className="album-title">{name}</h2>
+        <p className="album-desc">
           {releaseType} by {artist}
         </p>
         <div className="flex-row card-actions">
-          <a
-            href={link}
-            target="_blank"
-            className="btn btn-secondary w-full mx-auto text-xl"
-          >
+          <a href={link} target="_blank" className="bandcamp-button">
             Bandcamp
           </a>
           {codesAvailable > 0 ? (
-            <button
-              className="btn btn-accent w-full mx-auto text-xl"
-              onClick={navigateToRelease}
-            >
+            <button className="code-button" onClick={navigateToRelease}>
               Get Code
             </button>
           ) : (
-            <button
-              className="btn btn-tertiary w-full mx-auto text-xl"
-              onClick={navigateToRelease}
-            >
+            <button className="release-button" onClick={navigateToRelease}>
               Learn More
             </button>
           )}

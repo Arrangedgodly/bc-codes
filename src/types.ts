@@ -27,3 +27,14 @@ export type ReleaseProps = {
   releaseDate: string;
   releaseType: string;
 };
+
+export type NewReleaseProps = {
+  name: string;
+  about: string;
+  artist: string;
+  codes: string[];
+  image: string;
+  link: string;
+  releaseDate: string;
+  releaseType: string;
+}

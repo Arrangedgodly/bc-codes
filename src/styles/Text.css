@@ -1,0 +1,19 @@
+.main-text {
+  @apply text-4xl md:text-5xl sm:text-6xl;
+}
+
+.header-text {
+  @apply text-xl md:text-2xl sm:text-4xl;
+}
+
+.mid-text {
+  @apply text-lg md:text-xl sm:text-2xl;
+}
+
+.sub-text {
+  @apply text-sm md:text-lg sm:text-xl;
+}
+
+.small-text {
+  @apply text-xs md:text-sm sm:text-lg;
+}

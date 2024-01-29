@@ -65,7 +65,7 @@ const AlbumPage: React.FC<AlbumPageProps> = ({ user, fetchUser }) => {
 
   return (
     <div className="flex flex-col items-center min-h-[95vh] w-full">
-      <h1 className="text-6xl m-5 mx-auto font-bold mt-[7%]">
+      <h1 className="text-6xl m-5 mx-auto font-bold mt-[100px]">
         {release?.name}
       </h1>
       <div className="flex flex-row gap-10 mx-auto justify-center">

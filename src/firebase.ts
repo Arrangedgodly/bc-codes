@@ -16,7 +16,7 @@ import {
   collection,
   updateDoc,
 } from "firebase/firestore";
-import { ArtistProps, ReleaseProps, RedeemedProps } from "./types";
+import { ArtistProps, ReleaseProps, NewReleaseProps, RedeemedProps } from "./types";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAuOZMppl_i_395WP_5he4iDZ9CBl_QvmE",
@@ -147,7 +147,7 @@ async function updateUserLocation(
 
 async function addRelease(
   artistId: string,
-  releaseData: ReleaseProps
+  releaseData: NewReleaseProps
 ): Promise<void> {
   const releaseRef = await addDoc(collection(db, "releases"), releaseData);
   const artistRef = doc(db, "artists", artistId);
