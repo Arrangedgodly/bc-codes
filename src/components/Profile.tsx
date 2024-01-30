@@ -5,6 +5,7 @@ import {
   updateUserLocation,
   getRelease,
   removeRelease,
+  removeReleaseFromArtist
 } from "../firebase";
 import NewRelease from "./NewRelease";
 import Release from "./Release";
@@ -48,9 +49,14 @@ const Profile: React.FC<ProfileProps> = ({ user, setUser }) => {
 
   const deleteRelease = async () => {
     await removeRelease(activeRelease.id);
+    await removeReleaseFromArtist(user.uid, activeRelease.id);
     setUser(await getUserDocument(user.uid));
     setActiveRelease(null);
   };
+
+  const sortReleasesByDate = (a: any, b: any) => {
+    return new Date(b.releaseDate).getTime() - new Date(a.releaseDate).getTime();
+  }
 
   useEffect(() => {
     if (artistName !== user?.name) {
@@ -74,6 +80,7 @@ const Profile: React.FC<ProfileProps> = ({ user, setUser }) => {
       const releaseData = await Promise.all(
         user.releases.map((releaseId: string) => getRelease(releaseId))
       );
+      releaseData.sort(sortReleasesByDate);
       setReleases(releaseData);
     };
 
@@ -89,6 +96,7 @@ const Profile: React.FC<ProfileProps> = ({ user, setUser }) => {
           return { ...release, code: redeemedItem.code };
         })
       );
+      redeemedData.sort(sortReleasesByDate);
       setRedeemed(redeemedData);
     };
 

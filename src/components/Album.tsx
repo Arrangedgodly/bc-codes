@@ -19,13 +19,13 @@ const Album: React.FC<AlbumProps> = ({
   link,
   releaseType,
 }) => {
-  const codesAvailable = codes.length;
+  const codesAvailable = codes?.length;
   const navigate = useNavigate();
   const navigateToRelease = () => {
     navigate(`/release/${id}`);
   };
   return (
-    <div className="card w-1/5 bg-base-100 shadow-xl image-full m-3 indicator">
+    <div className="card w-[17.5%] bg-base-100 shadow-xl image-full m-5 indicator">
       {codesAvailable === 0 ? (
         <span className="code-indicator-error sub-text indicator-center indicator-bottom">
           No Codes Left!

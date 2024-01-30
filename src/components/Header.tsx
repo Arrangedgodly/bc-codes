@@ -17,7 +17,7 @@ const Header: React.FC<HeaderProps> = ({
   handleLogout,
 }) => {
   return (
-    <header className="navbar bg-neutral text-neutral-content fixed top-0">
+    <header className="navbar bg-neutral text-neutral-content fixed top-0 z-50">
       <div className="navbar-start">
         <Link className="text-3xl ml-2 flex items-center" to="/">
           <img src={Logo} alt="Code Fanatics" className="w-10 h-10 mr-2" />

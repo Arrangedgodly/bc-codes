@@ -1,13 +1,13 @@
 const Shortcut = () => {
   return (
-    <div className="flex flex-col justify-center items-center gap-3 w-full text-xl text-neutral absolute bottom-[75px]">
+    <div className="flex flex-col gap-3 w-full items-center justify-center text-xl text-neutral absolute top-[100px]">
       <div
-        className="flex flex-row justify-center gap-5 tooltip tooltip-open"
+        className="flex flex-row justify-center gap-5 tooltip tooltip-primary tooltip-bottom"
         data-tip="Use the arrow keys or swipe left and right to switch between artists!"
       >
-        <kbd className="kbd">◀︎</kbd>
-        <span className="text-4xl">+</span>
-        <kbd className="kbd">▶︎</kbd>
+        <kbd className="kbd small-text">◀︎</kbd>
+        <span className="header-text">+</span>
+        <kbd className="kbd small-text">▶︎</kbd>
       </div>
     </div>
   );

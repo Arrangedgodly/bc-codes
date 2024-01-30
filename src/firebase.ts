@@ -16,7 +16,12 @@ import {
   collection,
   updateDoc,
 } from "firebase/firestore";
-import { ArtistProps, ReleaseProps, NewReleaseProps, RedeemedProps } from "./types";
+import {
+  ArtistProps,
+  ReleaseProps,
+  NewReleaseProps,
+  RedeemedProps,
+} from "./types";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAuOZMppl_i_395WP_5he4iDZ9CBl_QvmE",
@@ -174,7 +179,7 @@ async function getRelease(releaseId: string): Promise<ReleaseProps | null> {
   const releaseRef = doc(db, "releases", releaseId);
   const releaseDoc = await getDoc(releaseRef);
   if (releaseDoc.exists()) {
-    return { id: releaseId, ...releaseDoc.data()} as ReleaseProps;
+    return { id: releaseId, ...releaseDoc.data() } as ReleaseProps;
   }
   return null;
 }
@@ -182,6 +187,26 @@ async function getRelease(releaseId: string): Promise<ReleaseProps | null> {
 async function removeRelease(releaseId: string): Promise<void> {
   const releaseRef = doc(db, "releases", releaseId);
   await deleteDoc(releaseRef);
+}
+
+async function removeReleaseFromArtist(
+  artistId: string,
+  releaseId: string
+): Promise<void> {
+  const artistRef = doc(db, "artists", artistId);
+  const artistDoc = await getDoc(artistRef);
+
+  if (artistDoc.exists()) {
+    const artistData = artistDoc.data() as ArtistProps;
+    const releases = artistData.releases;
+    const updatedReleases = releases.filter((id) => {
+      if (typeof id === "string") {
+        return id !== releaseId;
+      }
+    });
+
+    await updateDoc(artistRef, { releases: updatedReleases });
+  }
 }
 
 async function getCode(releaseId: string): Promise<string | null> {
@@ -254,6 +279,7 @@ export {
   updateRelease,
   getRelease,
   removeRelease,
+  removeReleaseFromArtist,
   getCode,
   removeCode,
   addCodeToUser,
