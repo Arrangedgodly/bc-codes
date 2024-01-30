@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Popup from "./Popup";
 
 const RedeemedRelease = ({ release }: any) => {
   const [codeRevealed, setCodeRevealed] = useState<boolean>(false);
@@ -16,20 +17,30 @@ const RedeemedRelease = ({ release }: any) => {
       <div className="justify-end card-body text-center">
         <h2 className="card-title m-auto text-xl">{release.name}</h2>
         {codeRevealed ? (
-          <p className="text-2xl">{release.code}</p>
+          <>
+            <p className="text-2xl">{release.code}</p>
+            <Popup text="Code successfully copied!" />
+          </>
         ) : (
           <div
             className="tooltip tooltip-secondary"
             data-tip="Click to Reveal/Copy the Code"
           >
             <button
-              className="btn btn-accent btn-sm"
+              className="btn btn-accent btn-sm w-full"
               onClick={handleCodeReveal}
             >
               My Code
             </button>
           </div>
         )}
+        <a
+          className="btn btn-primary btn-sm"
+          href={release.redeemURL}
+          target="_blank"
+        >
+          Download
+        </a>
       </div>
     </div>
   );
