@@ -15,7 +15,7 @@ const Footer = () => {
       </aside>
       <div className="grid-flow-col"></div>
       <div className="footer-center">
-        <label htmlFor="shortcut" className="btn btn-ghost">
+        <label htmlFor="shortcut" className="btn btn-ghost btn-sm rounded-btn">
           <FiHelpCircle className="h-6 w-6" />
         </label>
       </div>

@@ -17,10 +17,12 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import {
+  UserProps,
   ArtistProps,
   ReleaseProps,
   NewReleaseProps,
   RedeemedProps,
+  FanProps
 } from "./types";
 
 const firebaseConfig = {
@@ -36,51 +38,22 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore();
 
-async function emailLogin(
-  email: string,
-  password: string
-): Promise<ArtistProps | null> {
+async function emailLogin(email: string, password: string): Promise<void> {
   const auth = getAuth();
   try {
-    const userCredential = await signInWithEmailAndPassword(
-      auth,
-      email,
-      password
-    );
-    const user = userCredential.user;
-    if (user) {
-      const userDoc = await getUserDocument(user.uid);
-      if (!userDoc) {
-        await createUserDocument(user.uid);
-      }
-      return userDoc;
-    } else {
-      console.log("No user found")
-      return null;
-    }
+    await signInWithEmailAndPassword(auth, email, password);
   } catch (error) {
     console.error(error);
-    return null;
   }
 }
 
-async function googleLogin(): Promise<ArtistProps | null> {
+async function googleLogin(): Promise<void> {
   const auth = getAuth();
   const provider = new GoogleAuthProvider();
   try {
-    const result = await signInWithPopup(auth, provider);
-    const user = result.user;
-    if (user) {
-      const userDoc = await getUserDocument(user.uid);
-      if (!userDoc) {
-        await createUserDocument(user.uid);
-      }
-      return userDoc;
-    }
-    return null;
+    await signInWithPopup(auth, provider);
   } catch (error) {
     console.error(error);
-    return null;
   }
 }
 
@@ -93,52 +66,48 @@ async function logout(): Promise<void> {
   }
 }
 
-async function emailSignup(
-  email: string,
-  password: string
-): Promise<ArtistProps | null> {
+async function emailSignup(email: string, password: string): Promise<void> {
   const auth = getAuth();
   try {
-    const userCredential = await createUserWithEmailAndPassword(
-      auth,
-      email,
-      password
-    );
-    const user = userCredential.user;
-    if (user) {
-      const userDoc = await getUserDocument(user.uid);
-      if (!userDoc) {
-        await createUserDocument(user.uid);
-        const newUserDoc = await getUserDocument(user.uid);
-        return newUserDoc;
-      } else {
-        return userDoc;
-      }
-    }
-    return null;
+    await createUserWithEmailAndPassword(auth, email, password);
   } catch (error) {
     console.error(error);
-    return null;
   }
 }
 
-async function getUserDocument(uid: string): Promise<ArtistProps | null> {
-  const docRef = doc(db, "artists", uid);
+async function createUserDocument(uid: string, name: string, accountType: string): Promise<void> {
+  const userRef = doc(db, "users", uid);
+  await setDoc(userRef, { uid, name, accountType });
+}
+
+async function getUserDocument(uid: string): Promise<UserProps | null> {
+  const docRef = doc(db, "users", uid);
   const docSnap = await getDoc(docRef);
   if (docSnap.exists()) {
-    return docSnap.data() as ArtistProps;
+    return docSnap.data() as UserProps;
   }
   return null;
 }
 
-async function createUserDocument(uid: string): Promise<void> {
+async function createArtistDocument(uid: string): Promise<void> {
   const docRef = doc(db, "artists", uid);
   await setDoc(docRef, {
     uid,
     name: "",
     location: "",
     releases: [],
+    followers: [],
+    genres: []
+  });
+}
+
+async function createFanDocument(uid: string): Promise<void> {
+  const docRef = doc(db, "fans", uid);
+  await setDoc(docRef, {
+    uid,
+    name: "",
     redeemed: [],
+    following: [],
   });
 }
 
@@ -245,26 +214,26 @@ async function removeCode(releaseId: string, code: string): Promise<void> {
 }
 
 async function addCodeToUser(
-  artistId: string,
+  fanId: string,
   releaseId: string,
   code: string
 ): Promise<void> {
-  const artistRef = doc(db, "artists", artistId);
-  const artistDoc = await getDoc(artistRef);
-  if (artistDoc.exists()) {
-    const artistData = artistDoc.data() as ArtistProps;
+  const fanRef = doc(db, "fans", fanId);
+  const fanDoc = await getDoc(fanRef);
+  if (fanDoc.exists()) {
+    const fanData = fanDoc.data() as FanProps;
     const redeemed = { releaseId, code };
-    const updatedRedeemed = [...artistData.redeemed, redeemed];
-    await updateDoc(artistRef, { redeemed: updatedRedeemed });
+    const updatedRedeemed = [...fanData.redeemed, redeemed];
+    await updateDoc(fanRef, { redeemed: updatedRedeemed });
   }
 }
 
-async function getUserCodes(artistId: string): Promise<RedeemedProps[]> {
-  const artistRef = doc(db, "artists", artistId);
-  const artistDoc = await getDoc(artistRef);
-  if (artistDoc.exists()) {
-    const artistData = artistDoc.data() as ArtistProps;
-    const redeemed = artistData.redeemed;
+async function getUserCodes(fanId: string): Promise<RedeemedProps[]> {
+  const fanRef = doc(db, "fans", fanId);
+  const fanDoc = await getDoc(fanRef);
+  if (fanDoc.exists()) {
+    const fanData = fanDoc.data() as FanProps;
+    const redeemed = fanData.redeemed;
     return redeemed;
   }
   return [];
@@ -277,6 +246,9 @@ export {
   googleLogin,
   emailSignup,
   logout,
+  createArtistDocument,
+  createFanDocument,
+  createUserDocument,
   getUserDocument,
   updateUserLocation,
   updateUserName,

@@ -3,13 +3,26 @@ export type RedeemedProps = {
   code: string;
 }
 
+export type UserProps = {
+  uid: string;
+  name: string;
+  accountType: "fan" | "artist" | "both";
+}
+
 export type ArtistProps = {
   uid: string;
   name: string;
   location: string;
   releases: ReleaseProps[];
-  redeemed: RedeemedProps[];
+  followers: FanProps[];
 };
+
+export type FanProps = {
+  uid: string;
+  name: string;
+  redeemed: RedeemedProps[];
+  following: ArtistProps[];
+}
 
 export type AvatarProps = {
   user: any;

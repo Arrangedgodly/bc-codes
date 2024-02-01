@@ -15,22 +15,23 @@ import {
   logout,
   getUserDocument,
 } from "./firebase";
-import { Routes, Route } from "react-router-dom";
-import { ArtistProps } from "./types";
+import { Routes, Route, useNavigate } from "react-router-dom";
+import { UserProps } from "./types";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 const App = () => {
   const [theme, setTheme] = useState("dracula");
-  const [user, setUser] = useState<ArtistProps | null>(null);
+  const [user, setUser] = useState<UserProps | null>(null);
+  const [uid, setUid] = useState<string>("");
+  const navigate = useNavigate();
 
   const fetchUser = async () => {
     const auth = getAuth();
-    onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        const userDocument = await getUserDocument(user.uid);
-        setUser(userDocument);
+    onAuthStateChanged(auth, async (u) => {
+      if (u) {
+        setUid(u.uid);
       } else {
-        setUser(null);
+        setUid("");
       }
     });
   };
@@ -40,6 +41,23 @@ const App = () => {
     fetchUser();
   }, []);
 
+  useEffect(() => {
+    if (uid) {
+      getUserDocument(uid).then((res) => {
+        console.log(res);
+        if (res !== null) {
+          setUser(res);
+        } else {
+          navigate("/settings")
+        }
+      });
+    }
+  }, [uid]);
+
+  useEffect(() => {
+    if (user) {
+      navigate("/");
+    }}, [user]);
 
   const handleThemeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTheme(event.target.checked ? "nord" : "dracula");
@@ -102,7 +120,7 @@ const App = () => {
           path="/profile"
           element={<Profile user={user} setUser={setUser} />}
         />
-        <Route path="/settings" element={<Settings user={user} />} />
+        <Route path="/settings" element={<Settings uid={uid} />} />
         <Route
           path="/release/:releaseId"
           element={<AlbumPage user={user} fetchUser={fetchUser} />}
