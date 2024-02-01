@@ -1,5 +1,4 @@
 import Artist from "./Artist";
-import Shortcut from "./Shortcut";
 import Loading from "./Loading";
 import { db } from "../firebase";
 import {
@@ -86,7 +85,6 @@ const Artists = () => {
           );
         })
       )}
-      <Shortcut />
     </div>
   );
 };

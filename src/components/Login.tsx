@@ -5,12 +5,14 @@ type LoginProps = {
   user: any;
   handleEmailLogin: (email: string, password: string) => void;
   handleGoogleLogin: () => void;
+  setUser: any;
 };
 
 const Login: React.FC<LoginProps> = ({
   user,
   handleEmailLogin,
   handleGoogleLogin,
+  setUser
 }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -25,7 +27,13 @@ const Login: React.FC<LoginProps> = ({
   };
 
   const handleEmail = () => {
-    handleEmailLogin(email, password);
+    console.log("Handle email clicked")
+    const user = handleEmailLogin(email, password);
+    console.log("User: ", user)
+    if (user !== null) {
+      setUser(user);
+    }
+    console.log("Handle email finished")
   };
 
   useEffect(() => {

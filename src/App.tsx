@@ -40,6 +40,7 @@ const App = () => {
     fetchUser();
   }, []);
 
+
   const handleThemeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTheme(event.target.checked ? "nord" : "dracula");
     themeChange(event.target.checked);
@@ -82,6 +83,7 @@ const App = () => {
               user={user}
               handleEmailLogin={handleEmailLogin}
               handleGoogleLogin={handleGoogleLogin}
+              setUser={setUser}
             />
           }
         />
@@ -92,6 +94,7 @@ const App = () => {
               user={user}
               handleEmailSignup={handleEmailSignup}
               handleGoogleSignup={handleGoogleLogin}
+              setUser={setUser}
             />
           }
         />

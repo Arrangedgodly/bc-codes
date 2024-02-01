@@ -18,7 +18,7 @@ const Avatar: React.FC<AvatarProps> = ({ user, handleLogout }) => {
           <summary className="m-2 btn btn-ghost avatar online">
             <div className="w-10 rounded-full bg-secondary">
               <span className="text-4xl text-secondary-content">
-                {getInitials(user.name)}
+                {getInitials(user?.name)}
               </span>
             </div>
           </summary>

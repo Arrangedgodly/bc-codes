@@ -54,8 +54,10 @@ async function emailLogin(
         await createUserDocument(user.uid);
       }
       return userDoc;
+    } else {
+      console.log("No user found")
+      return null;
     }
-    return null;
   } catch (error) {
     console.error(error);
     return null;
@@ -107,8 +109,11 @@ async function emailSignup(
       const userDoc = await getUserDocument(user.uid);
       if (!userDoc) {
         await createUserDocument(user.uid);
+        const newUserDoc = await getUserDocument(user.uid);
+        return newUserDoc;
+      } else {
+        return userDoc;
       }
-      return userDoc;
     }
     return null;
   } catch (error) {

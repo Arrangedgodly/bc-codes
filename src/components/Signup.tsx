@@ -5,12 +5,14 @@ type SignupProps = {
   user: any;
   handleEmailSignup: (email: string, password: string) => void;
   handleGoogleSignup: () => void;
+  setUser: any;
 };
 
 const Signup: React.FC<SignupProps> = ({
   user,
   handleEmailSignup,
   handleGoogleSignup,
+  setUser
 }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -36,7 +38,10 @@ const Signup: React.FC<SignupProps> = ({
       alert("Passwords do not match!");
       return;
     } else {
-      handleEmailSignup(email, password);
+      const user = handleEmailSignup(email, password);
+      if (user !== null) {
+        setUser(user);
+      }
     }
   };
 
