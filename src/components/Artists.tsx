@@ -78,9 +78,9 @@ const Artists = () => {
               uid={artist.uid}
               key={artist.name}
               name={artist.name}
-              redeemed={artist.redeemed}
               location={artist.location}
               releases={artist.releases}
+              followers={artist.followers}
             />
           );
         })

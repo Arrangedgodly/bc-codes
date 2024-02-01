@@ -101,6 +101,15 @@ async function createArtistDocument(uid: string): Promise<void> {
   });
 }
 
+async function getArtistDocument(uid: string): Promise<ArtistProps | null> {
+  const docRef = doc(db, "artists", uid);
+  const docSnap = await getDoc(docRef);
+  if (docSnap.exists()) {
+    return docSnap.data() as ArtistProps;
+  }
+  return null;
+}
+
 async function createFanDocument(uid: string): Promise<void> {
   const docRef = doc(db, "fans", uid);
   await setDoc(docRef, {
@@ -109,6 +118,15 @@ async function createFanDocument(uid: string): Promise<void> {
     redeemed: [],
     following: [],
   });
+}
+
+async function getFanDocument(uid: string): Promise<FanProps | null> {
+  const docRef = doc(db, "fans", uid);
+  const docSnap = await getDoc(docRef);
+  if (docSnap.exists()) {
+    return docSnap.data() as FanProps;
+  }
+  return null;
 }
 
 async function updateUserName(uid: string, name: string): Promise<void> {
@@ -247,7 +265,9 @@ export {
   emailSignup,
   logout,
   createArtistDocument,
+  getArtistDocument,
   createFanDocument,
+  getFanDocument,
   createUserDocument,
   getUserDocument,
   updateUserLocation,
