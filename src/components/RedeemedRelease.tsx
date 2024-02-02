@@ -19,7 +19,7 @@ const RedeemedRelease = ({ release }: any) => {
         {codeRevealed ? (
           <>
             <p className="text-2xl">{release.code}</p>
-            <Popup text="Code successfully copied!" />
+            <Popup text="Code successfully copied!" version="success" />
           </>
         ) : (
           <div

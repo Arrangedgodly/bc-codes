@@ -76,6 +76,7 @@ const Artists = () => {
           return (
             <Artist
               artist={artist}
+              key={artist.uid}
             />
           );
         })
