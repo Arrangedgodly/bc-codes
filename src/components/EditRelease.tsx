@@ -14,6 +14,7 @@ const EditRelease = ({ release }: any) => {
   const [validRedeemURL, setValidRedeemURL] = useState<boolean>(false);
   const [link, setlink] = useState<string>(release?.link);
   const [validlink, setValidlink] = useState<boolean>(false);
+  const [slug, setSlug] = useState<string>(release?.slug);
   const [releaseDate, setReleaseDate] = useState<string>(release?.releaseDate);
   const [releaseType, setReleaseType] = useState<string>(release?.releaseType);
   const [codes, setCodes] = useState<string[]>(release?.codes);
@@ -22,13 +23,6 @@ const EditRelease = ({ release }: any) => {
   const [newRelease, setNewRelease] = useState<any>(null);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.value === "") {
-      setValidImage(false);
-    } else if (!validator.isURL(e.target.value)) {
-      setValidImage(false);
-    } else {
-      setValidImage(true);
-    }
     setImage(e.target.value);
   };
 
@@ -41,24 +35,10 @@ const EditRelease = ({ release }: any) => {
   };
 
   const handlelinkChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.value === "") {
-      setValidlink(false);
-    } else if (!validator.isURL(e.target.value)) {
-      setValidlink(false);
-    } else {
-      setValidlink(true);
-    }
     setlink(e.target.value);
   };
 
   const handleRedeemURLChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.value === "") {
-      setValidRedeemURL(false);
-    } else if (!validator.isURL(e.target.value)) {
-      setValidRedeemURL(false);
-    } else {
-      setValidRedeemURL(true);
-    }
     setRedeemURL(e.target.value);
   };
 
@@ -139,6 +119,7 @@ const EditRelease = ({ release }: any) => {
       image,
       releaseDate,
       releaseType,
+      slug
     };
     setNewRelease(newRelease);
   }, [
@@ -151,7 +132,44 @@ const EditRelease = ({ release }: any) => {
     releaseDate,
     releaseType,
     codes,
+    slug
   ]);
+
+  const checkImageValidity = () => {
+    if (validator.isURL(image)) {
+      setValidImage(true);
+    } else {
+      setValidImage(false);
+    }
+  }
+
+  const checkLinkValidity = () => {
+    if (validator.isURL(link)) {
+      setValidlink(true);
+    } else {
+      setValidlink(false);
+    }
+  }
+
+  const checkRedeemURLValidity = () => {
+    if (validator.isURL(redeemURL)) {
+      setValidRedeemURL(true);
+    } else {
+      setValidRedeemURL(false);
+    }
+  }
+
+  useEffect(() => {
+    checkImageValidity();
+  }, [image]);
+
+  useEffect(() => {
+    checkLinkValidity();
+  }, [link]);
+
+  useEffect(() => {
+    checkRedeemURLValidity();
+  }, [redeemURL]);
 
   return (
     <>
@@ -247,6 +265,28 @@ const EditRelease = ({ release }: any) => {
               }
               onChange={handleRedeemURLChange}
             />
+          </div>
+          <div className="form-control my-2 w-full">
+            <label className="label">
+              <span className="label-text text-3xl">Slug *</span>
+              <span className="label-text-alt text-2xl">
+                The URL identifier for your release
+              </span>
+            </label>
+            <input
+              type="text"
+              placeholder="Slug"
+              value={slug}
+              className="input input-bordered text-2xl"
+              onChange={(e) => setSlug(e.target.value)}
+            />
+            <label className="label">
+              {slug.length > 0 && (
+                <span className="label-text text-2xl italic">
+                  Your release link will be codefanatics.app/release/{slug}
+                </span>
+              )}
+            </label>
           </div>
           <div className="form-control my-2 w-full">
             <label className="label">
