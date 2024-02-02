@@ -145,6 +145,14 @@ async function updateArtistLocation(
   await setDoc(docRef, { location }, { merge: true });
 }
 
+async function updateArtistSlug(
+  uid: string,
+  slug: string
+): Promise<void> {
+  const docRef = doc(db, "artists", uid);
+  await setDoc(docRef, { slug }, { merge: true });
+}
+
 async function addRelease(
   artistId: string,
   releaseData: NewReleaseProps
@@ -286,6 +294,7 @@ export {
   getUserDocument,
   updateArtistLocation,
   updateArtistName,
+  updateArtistSlug,
   addRelease,
   updateRelease,
   getRelease,

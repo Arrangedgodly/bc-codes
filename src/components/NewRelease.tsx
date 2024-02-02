@@ -17,8 +17,9 @@ const NewRelease: React.FC<NewReleaseProps> = ({ user, setUser }) => {
   const [validRedeemURL, setValidRedeemURL] = useState<boolean>(false);
   const [link, setlink] = useState<string>("");
   const [validlink, setValidlink] = useState<boolean>(false);
+  const [slug, setSlug] = useState<string>("");
   const [releaseDate, setReleaseDate] = useState<string>("");
-  const [releaseType, setReleaseType] = useState<string>("");
+  const [releaseType, setReleaseType] = useState<string>("single");
   const [codes, setCodes] = useState<string[]>([]);
   const [codeCount, setCodeCount] = useState<number>(0);
   const [canSubmit, setCanSubmit] = useState<boolean>(false);
@@ -96,6 +97,7 @@ const NewRelease: React.FC<NewReleaseProps> = ({ user, setUser }) => {
       image,
       releaseDate,
       releaseType,
+      slug,
     };
     await addRelease(user.uid, release);
     setImage("");
@@ -116,13 +118,7 @@ const NewRelease: React.FC<NewReleaseProps> = ({ user, setUser }) => {
   }, [codes]);
 
   const areRequiredFieldsChanged = (): boolean => {
-    const requiredFields = [
-      image,
-      redeemURL,
-      link,
-      releaseDate,
-      releaseType,
-    ];
+    const requiredFields = [image, redeemURL, link, releaseDate, slug];
     return requiredFields.every((field) => field !== "");
   };
 
@@ -132,7 +128,7 @@ const NewRelease: React.FC<NewReleaseProps> = ({ user, setUser }) => {
     } else {
       setCanSubmit(false);
     }
-  }, [image, redeemURL, link, releaseDate, releaseType]);
+  }, [image, redeemURL, link, releaseDate, slug]);
 
   return (
     <>
@@ -141,9 +137,7 @@ const NewRelease: React.FC<NewReleaseProps> = ({ user, setUser }) => {
         <div className="modal-box glass">
           <h3 className="text-5xl font-bold">Add New Release</h3>
           <p className="text-2xl">* denotes required fields</p>
-          {image && (
-            <img src={image} alt={name} className="w-full my-2" />
-          )}
+          {image && <img src={image} alt={name} className="w-full my-2" />}
           <div className="form-control my-2 w-full">
             <label className="label">
               <span className="label-text text-3xl">Image URL *</span>
@@ -233,6 +227,28 @@ const NewRelease: React.FC<NewReleaseProps> = ({ user, setUser }) => {
           </div>
           <div className="form-control my-2 w-full">
             <label className="label">
+              <span className="label-text text-3xl">Slug *</span>
+              <span className="label-text-alt text-2xl">
+                The URL identifier for your release
+              </span>
+            </label>
+            <input
+              type="text"
+              placeholder="Slug"
+              value={slug}
+              className="input input-bordered text-2xl"
+              onChange={(e) => setSlug(e.target.value)}
+            />
+            <label className="label">
+              {slug.length > 0 && (
+                <span className="label-text text-2xl italic">
+                  Your release link will be codefanatics.app/release/{slug}
+                </span>
+              )}
+            </label>
+          </div>
+          <div className="form-control my-2 w-full">
+            <label className="label">
               <span className="label-text text-3xl">Release Date *</span>
             </label>
             <input
@@ -282,7 +298,11 @@ const NewRelease: React.FC<NewReleaseProps> = ({ user, setUser }) => {
           <div className="modal-action">
             <label
               htmlFor="new_release"
-              className={canSubmit ? "btn btn-primary btn-lg text-2xl w-full" : "btn btn-primary btn-disabled btn-lg text-2xl w-full"}
+              className={
+                canSubmit
+                  ? "btn btn-primary btn-lg text-2xl w-full"
+                  : "btn btn-primary btn-disabled btn-lg text-2xl w-full"
+              }
               onClick={handleAddRelease}
             >
               Add Release

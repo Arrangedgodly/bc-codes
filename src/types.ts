@@ -15,6 +15,7 @@ export type ArtistProps = {
   location: string;
   releases: [string];
   followers: [string];
+  slug: string;
 };
 
 export type FanProps = {
@@ -39,6 +40,7 @@ export type ReleaseProps = {
   link: string;
   releaseDate: string;
   releaseType: string;
+  slug: string;
 };
 
 export type NewReleaseProps = {
