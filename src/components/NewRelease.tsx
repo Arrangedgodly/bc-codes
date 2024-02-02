@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import validator from "validator";
-import { addRelease, getUserDocument } from "../firebase";
+import { addRelease, getArtistDocument } from "../firebase";
 
 type NewReleaseProps = {
   user: any;
@@ -108,7 +108,7 @@ const NewRelease: React.FC<NewReleaseProps> = ({ user, setUser }) => {
     setReleaseType("");
     setCodes([]);
     setCodeCount(0);
-    setUser(await getUserDocument(user.uid));
+    setUser(await getArtistDocument(user.uid));
   };
 
   useEffect(() => {

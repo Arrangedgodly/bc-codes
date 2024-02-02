@@ -1,36 +1,34 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { emailSignup, googleLogin } from "../firebase";
+import Popup from "./Popup";
 
 type SignupProps = {
   user: any;
-  handleEmailSignup: (email: string, password: string) => void;
-  handleGoogleSignup: () => void;
-  setUser: any;
 };
 
-const Signup: React.FC<SignupProps> = ({
-  user,
-  handleEmailSignup,
-  handleGoogleSignup,
-  setUser
-}) => {
+const Signup: React.FC<SignupProps> = ({ user }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
+  const [error, setError] = useState<boolean>(false);
   const navigate = useNavigate();
 
   const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(event.target.value);
+    setError(false);
   };
 
   const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(event.target.value);
+    setError(false);
   };
 
   const handlePasswordConfirmChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     setPasswordConfirm(event.target.value);
+    setError(false);
   };
 
   const handleEmail = () => {
@@ -38,10 +36,7 @@ const Signup: React.FC<SignupProps> = ({
       alert("Passwords do not match!");
       return;
     } else {
-      const user = handleEmailSignup(email, password);
-      if (user !== null) {
-        setUser(user);
-      }
+      emailSignup(email, password).catch(() => setError(true));
     }
   };
 
@@ -84,12 +79,10 @@ const Signup: React.FC<SignupProps> = ({
       <button onClick={handleEmail} className="text-xl btn btn-accent m-3">
         Sign Up with Email/Password
       </button>
-      <button
-        onClick={handleGoogleSignup}
-        className="text-xl btn btn-secondary m-3"
-      >
+      <button onClick={googleLogin} className="text-xl btn btn-secondary m-3">
         Sign Up with Google
       </button>
+      {error && <Popup text="Error Signing Up!" version="error" />}
     </div>
   );
 };

@@ -6,6 +6,7 @@ import {
   createArtistDocument,
   createFanDocument,
 } from "../firebase";
+import Popup from "./Popup";
 
 type SettingsProps = {
   uid: string;
@@ -16,6 +17,7 @@ const Settings: React.FC<SettingsProps> = ({ uid }) => {
   const [accountType, setAccountType] = useState(
     "Fan" as "Fan" | "Artist" | "Both"
   );
+  const [error, setError] = useState(false);
   const navigate = useNavigate();
 
   const handleSettings = async () => {
@@ -26,6 +28,16 @@ const Settings: React.FC<SettingsProps> = ({ uid }) => {
     if (accountType === "Fan" || accountType === "Both") {
       await createFanDocument(uid);
     }
+  };
+
+  const handleNavigation = async () => {
+    handleSettings()
+      .then(() => {
+        navigate("/");
+      })
+      .catch(() => {
+        setError(true);
+      });
   };
 
   useEffect(() => {
@@ -77,10 +89,16 @@ const Settings: React.FC<SettingsProps> = ({ uid }) => {
             <option>Both</option>
           </select>
         </label>
-        <button className="btn btn-primary btn-lg w-full" onClick={handleSettings}>
+        <button
+          className="btn btn-primary btn-lg w-full"
+          onClick={handleNavigation}
+        >
           Save
         </button>
       </div>
+      {error && (
+        <Popup text="There was an error saving your settings" version="error" />
+      )}
     </div>
   );
 };

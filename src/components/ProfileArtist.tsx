@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import {
-  getUserDocument,
-  updateUserName,
-  updateUserLocation,
+  getArtistDocument,
+  updateArtistName,
+  updateArtistLocation,
   removeRelease,
   removeReleaseFromArtist,
   getRelease,
@@ -14,9 +14,10 @@ import DeletePopup from "./DeletePopup";
 
 type ProfileArtistProps = {
   artistProfile: any;
+  setArtistProfile: any;
 };
 
-const ProfileArtist: React.FC<ProfileArtistProps> = ({ artistProfile }) => {
+const ProfileArtist: React.FC<ProfileArtistProps> = ({ artistProfile, setArtistProfile }) => {
   const [artistName, setArtistName] = useState<string>(artistProfile?.name);
   const [newArtistName, setNewArtistName] = useState<boolean>(false);
   const [location, setLocation] = useState<string>(artistProfile?.location);
@@ -29,9 +30,9 @@ const ProfileArtist: React.FC<ProfileArtistProps> = ({ artistProfile }) => {
   };
 
   const handleArtistNameSave = async () => {
-    await updateUserName(artistProfile.uid, artistName);
+    await updateArtistName(artistProfile.uid, artistName);
     setNewArtistName(false);
-    setUser(await getUserDocument(artistProfile.uid));
+    setArtistProfile(await getArtistDocument(artistProfile.uid));
   };
 
   const handleLocationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -39,15 +40,15 @@ const ProfileArtist: React.FC<ProfileArtistProps> = ({ artistProfile }) => {
   };
 
   const handleLocationSave = async () => {
-    await updateUserLocation(artistProfile.uid, location);
+    await updateArtistLocation(artistProfile.uid, location);
     setNewLocation(false);
-    setUser(await getUserDocument(artistProfile.uid));
+    setArtistProfile(await getArtistDocument(artistProfile.uid));
   };
 
   const deleteRelease = async () => {
     await removeRelease(activeRelease.id);
     await removeReleaseFromArtist(artistProfile.uid, activeRelease.id);
-    setUser(await getUserDocument(artistProfile.uid));
+    setArtistProfile(await getArtistDocument(artistProfile.uid));
     setActiveRelease(null);
   };
 
@@ -153,7 +154,7 @@ const ProfileArtist: React.FC<ProfileArtistProps> = ({ artistProfile }) => {
           + New Release
         </label>
       </div>
-      <NewRelease user={user} setUser={setUser} />
+      <NewRelease user={artistProfile} setUser={setArtistProfile} />
       {activeRelease && <EditRelease release={activeRelease} />}
       {activeRelease && <DeletePopup deleteRelease={deleteRelease} />}
     </>

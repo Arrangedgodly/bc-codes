@@ -40,11 +40,7 @@ const db = getFirestore();
 
 async function emailLogin(email: string, password: string): Promise<void> {
   const auth = getAuth();
-  try {
-    await signInWithEmailAndPassword(auth, email, password);
-  } catch (error) {
-    console.error(error);
-  }
+  await signInWithEmailAndPassword(auth, email, password);
 }
 
 async function googleLogin(): Promise<void> {
@@ -68,11 +64,7 @@ async function logout(): Promise<void> {
 
 async function emailSignup(email: string, password: string): Promise<void> {
   const auth = getAuth();
-  try {
-    await createUserWithEmailAndPassword(auth, email, password);
-  } catch (error) {
-    console.error(error);
-  }
+  await createUserWithEmailAndPassword(auth, email, password);
 }
 
 async function createUserDocument(uid: string, name: string, accountType: string): Promise<void> {
@@ -129,12 +121,12 @@ async function getFanDocument(uid: string): Promise<FanProps | null> {
   return null;
 }
 
-async function updateUserName(uid: string, name: string): Promise<void> {
+async function updateArtistName(uid: string, name: string): Promise<void> {
   const docRef = doc(db, "artists", uid);
   await setDoc(docRef, { name }, { merge: true });
 }
 
-async function updateUserLocation(
+async function updateArtistLocation(
   uid: string,
   location: string
 ): Promise<void> {
@@ -231,7 +223,7 @@ async function removeCode(releaseId: string, code: string): Promise<void> {
   }
 }
 
-async function addCodeToUser(
+async function addCodeToFan(
   fanId: string,
   releaseId: string,
   code: string
@@ -246,7 +238,7 @@ async function addCodeToUser(
   }
 }
 
-async function getUserCodes(fanId: string): Promise<RedeemedProps[]> {
+async function getFanCodes(fanId: string): Promise<RedeemedProps[]> {
   const fanRef = doc(db, "fans", fanId);
   const fanDoc = await getDoc(fanRef);
   if (fanDoc.exists()) {
@@ -270,8 +262,8 @@ export {
   getFanDocument,
   createUserDocument,
   getUserDocument,
-  updateUserLocation,
-  updateUserName,
+  updateArtistLocation,
+  updateArtistName,
   addRelease,
   updateRelease,
   getRelease,
@@ -279,6 +271,6 @@ export {
   removeReleaseFromArtist,
   getCode,
   removeCode,
-  addCodeToUser,
-  getUserCodes,
+  addCodeToFan,
+  getFanCodes,
 };

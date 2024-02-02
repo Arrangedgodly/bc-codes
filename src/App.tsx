@@ -8,13 +8,7 @@ import AlbumPage from "./components/AlbumPage";
 import Footer from "./components/Footer";
 import { useState, useEffect } from "react";
 import { themeChange } from "theme-change";
-import {
-  emailLogin,
-  googleLogin,
-  emailSignup,
-  logout,
-  getUserDocument,
-} from "./firebase";
+import { logout, getUserDocument, getFanDocument, getArtistDocument } from "./firebase";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import { UserProps } from "./types";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
@@ -23,6 +17,8 @@ const App = () => {
   const [theme, setTheme] = useState("dracula");
   const [user, setUser] = useState<UserProps | null>(null);
   const [uid, setUid] = useState<string>("");
+  const [fanProfile, setFanProfile] = useState<any>(null);
+  const [artistProfile, setArtistProfile] = useState<any>(null);
   const navigate = useNavigate();
 
   const fetchUser = async () => {
@@ -48,7 +44,7 @@ const App = () => {
         if (res !== null) {
           setUser(res);
         } else {
-          navigate("/settings")
+          navigate("/settings");
         }
       });
     }
@@ -56,32 +52,29 @@ const App = () => {
 
   useEffect(() => {
     if (user) {
-      navigate("/");
-    }}, [user]);
+      handleProfileFetch();
+    }
+  }, [user]);
 
   const handleThemeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTheme(event.target.checked ? "nord" : "dracula");
     themeChange(event.target.checked);
   };
 
-  const handleEmailLogin = async (email: string, password: string) => {
-    const res = await emailLogin(email, password);
-    return res;
-  };
-
-  const handleGoogleLogin = async () => {
-    const res = await googleLogin();
-    return res;
-  };
-
-  const handleEmailSignup = async (email: string, password: string) => {
-    const res = await emailSignup(email, password);
-    return res;
-  };
-
   const handleLogout = async () => {
     await logout();
     setUser(null);
+  };
+
+  const handleProfileFetch = async () => {
+    if (user?.accountType === "Fan" || user?.accountType === "Both") {
+      const fanData = await getFanDocument(user.uid);
+      setFanProfile(fanData);
+    }
+    if (user?.accountType === "Artist" || user?.accountType === "Both") {
+      const artistData = await getArtistDocument(user.uid);
+      setArtistProfile(artistData);
+    }
   };
 
   return (
@@ -94,31 +87,18 @@ const App = () => {
       />
       <Routes>
         <Route path="/" element={<Artists />} />
-        <Route
-          path="/login"
-          element={
-            <Login
-              user={user}
-              handleEmailLogin={handleEmailLogin}
-              handleGoogleLogin={handleGoogleLogin}
-              setUser={setUser}
-            />
-          }
-        />
-        <Route
-          path="/signup"
-          element={
-            <Signup
-              user={user}
-              handleEmailSignup={handleEmailSignup}
-              handleGoogleSignup={handleGoogleLogin}
-              setUser={setUser}
-            />
-          }
-        />
+        <Route path="/login" element={<Login user={user} />} />
+        <Route path="/signup" element={<Signup user={user} />} />
         <Route
           path="/profile"
-          element={<Profile user={user} setUser={setUser} />}
+          element={
+            <Profile
+              user={user}
+              fanProfile={fanProfile}
+              artistProfile={artistProfile}
+              setArtistProfile={setArtistProfile}
+            />
+          }
         />
         <Route path="/settings" element={<Settings uid={uid} />} />
         <Route

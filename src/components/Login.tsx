@@ -1,44 +1,35 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { emailLogin, googleLogin } from "../firebase";
+import Popup from "./Popup";
 
 type LoginProps = {
   user: any;
-  handleEmailLogin: (email: string, password: string) => void;
-  handleGoogleLogin: () => void;
-  setUser: any;
 };
 
-const Login: React.FC<LoginProps> = ({
-  user,
-  handleEmailLogin,
-  handleGoogleLogin,
-  setUser
-}) => {
+const Login: React.FC<LoginProps> = ({ user }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState<boolean>(false);
   const navigate = useNavigate();
 
   const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(event.target.value);
+    setError(false);
   };
 
   const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(event.target.value);
+    setError(false);
   };
 
   const handleEmail = () => {
-    console.log("Handle email clicked")
-    const user = handleEmailLogin(email, password);
-    console.log("User: ", user)
-    if (user !== null) {
-      setUser(user);
-    }
-    console.log("Handle email finished")
+    emailLogin(email, password).catch(() => setError(true));
   };
 
   useEffect(() => {
     if (user) {
-      navigate("/");
+      navigate("/profile");
     }
   }, [user]);
 
@@ -66,12 +57,10 @@ const Login: React.FC<LoginProps> = ({
       <button onClick={handleEmail} className="text-xl btn btn-accent m-3">
         Login with Email/Password
       </button>
-      <button
-        onClick={handleGoogleLogin}
-        className="text-xl btn btn-secondary m-3"
-      >
+      <button onClick={googleLogin} className="text-xl btn btn-secondary m-3">
         Login with Google
       </button>
+      {error && <Popup text="Invalid Email or Password" version="error" />}
     </div>
   );
 };

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getRelease, getCode, removeCode, addCodeToUser } from "../firebase";
+import { getRelease, getCode, removeCode, addCodeToFan } from "../firebase";
 import { useParams, useNavigate } from "react-router-dom";
 
 type AlbumPageProps = {
@@ -40,7 +40,7 @@ const AlbumPage: React.FC<AlbumPageProps> = ({ user, fetchUser }) => {
         ...release,
         codes: release.codes.filter((c: string) => c !== code),
       });
-      await addCodeToUser(user.uid, releaseId, code);
+      await addCodeToFan(user.uid, releaseId, code);
       fetchUser();
     }
   };

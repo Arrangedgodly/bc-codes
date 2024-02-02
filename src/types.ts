@@ -6,7 +6,7 @@ export type RedeemedProps = {
 export type UserProps = {
   uid: string;
   name: string;
-  accountType: "fan" | "artist" | "both";
+  accountType: "Fan" | "Artist" | "Both";
 }
 
 export type ArtistProps = {
