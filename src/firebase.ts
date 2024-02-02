@@ -11,6 +11,7 @@ import {
   doc,
   setDoc,
   getDoc,
+  getDocs,
   addDoc,
   deleteDoc,
   collection,
@@ -102,6 +103,16 @@ async function getArtistDocument(uid: string): Promise<ArtistProps | null> {
   return null;
 }
 
+async function getArtistDocumentBySlug(slug: string): Promise<ArtistProps | null> {
+  const artistsRef = collection(db, "artists");
+  const querySnapshot = await getDocs(artistsRef);
+  const matchingArtists = querySnapshot.docs.filter(doc => doc.data().slug === slug);
+  if (matchingArtists.length > 0) {
+    return matchingArtists[0].data() as ArtistProps;
+  }
+  return null;
+}
+
 async function createFanDocument(uid: string): Promise<void> {
   const docRef = doc(db, "fans", uid);
   await setDoc(docRef, {
@@ -164,6 +175,16 @@ async function getRelease(releaseId: string): Promise<ReleaseProps | null> {
   const releaseDoc = await getDoc(releaseRef);
   if (releaseDoc.exists()) {
     return { id: releaseId, ...releaseDoc.data() } as ReleaseProps;
+  }
+  return null;
+}
+
+async function getReleaseBySlug(slug: string): Promise<ReleaseProps | null> {
+  const releasesRef = collection(db, "releases");
+  const querySnapshot = await getDocs(releasesRef);
+  const matchingReleases = querySnapshot.docs.filter(doc => doc.data().slug === slug);
+  if (matchingReleases.length > 0) {
+    return { id: matchingReleases[0].id, ...matchingReleases[0].data() } as ReleaseProps;
   }
   return null;
 }
@@ -258,6 +279,7 @@ export {
   logout,
   createArtistDocument,
   getArtistDocument,
+  getArtistDocumentBySlug,
   createFanDocument,
   getFanDocument,
   createUserDocument,
@@ -267,6 +289,7 @@ export {
   addRelease,
   updateRelease,
   getRelease,
+  getReleaseBySlug,
   removeRelease,
   removeReleaseFromArtist,
   getCode,

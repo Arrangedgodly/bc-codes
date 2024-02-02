@@ -1,5 +1,6 @@
 import Header from "./components/Header";
 import Artists from "./components/Artists";
+import ArtistPage from "./components/ArtistPage";
 import Login from "./components/Login";
 import Signup from "./components/Signup";
 import Profile from "./components/Profile";
@@ -64,6 +65,9 @@ const App = () => {
   const handleLogout = async () => {
     await logout();
     setUser(null);
+    setFanProfile(null);
+    setArtistProfile(null);
+    navigate("/");
   };
 
   const handleProfileFetch = async () => {
@@ -102,9 +106,10 @@ const App = () => {
         />
         <Route path="/settings" element={<Settings uid={uid} />} />
         <Route
-          path="/release/:releaseId"
-          element={<AlbumPage user={user} fetchUser={fetchUser} />}
+          path="/release/:releaseSlug"
+          element={<AlbumPage fanProfile={fanProfile} setFanProfile={setFanProfile}/>}
         />
+        <Route path="/artist/:artistSlug" element={<ArtistPage />} />
       </Routes>
       <Footer />
     </div>

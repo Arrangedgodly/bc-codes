@@ -1,28 +1,28 @@
 import { useNavigate } from "react-router-dom";
 
 type AlbumProps = {
-  id: string;
   name: string;
   artist: string;
   codes: string[];
   image: string;
   link: string;
+  slug: string;
   releaseType: string;
 };
 
 const Album: React.FC<AlbumProps> = ({
-  id,
   name,
   artist,
   codes,
   image,
   link,
+  slug,
   releaseType,
 }) => {
   const codesAvailable = codes?.length;
   const navigate = useNavigate();
   const navigateToRelease = () => {
-    navigate(`/release/${id}`);
+    navigate(`/release/${slug}`);
   };
   return (
     <div className="card w-[17.5%] bg-base-100 shadow-xl image-full m-5 indicator">

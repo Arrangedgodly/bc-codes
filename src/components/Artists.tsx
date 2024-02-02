@@ -75,12 +75,7 @@ const Artists = () => {
         sortedArtists.map((artist) => {
           return (
             <Artist
-              uid={artist.uid}
-              key={artist.name}
-              name={artist.name}
-              location={artist.location}
-              releases={artist.releases}
-              followers={artist.followers}
+              artist={artist}
             />
           );
         })

@@ -1,25 +1,31 @@
 import { useState, useEffect } from "react";
-import { getRelease, getCode, removeCode, addCodeToFan } from "../firebase";
+import {
+  getReleaseBySlug,
+  getCode,
+  removeCode,
+  addCodeToFan,
+  getFanDocument,
+} from "../firebase";
 import { useParams, useNavigate } from "react-router-dom";
 
 type AlbumPageProps = {
-  user: any;
-  fetchUser: () => void;
+  fanProfile: any;
+  setFanProfile: any;
 };
 
-const AlbumPage: React.FC<AlbumPageProps> = ({ user, fetchUser }) => {
+const AlbumPage: React.FC<AlbumPageProps> = ({ fanProfile, setFanProfile }) => {
   const [release, setRelease] = useState<any>(null);
   const [alreadyRedeemed, setAlreadyRedeemed] = useState<boolean>(false);
-  const { releaseId } = useParams();
+  const { releaseSlug } = useParams();
   const navigate = useNavigate();
 
   useEffect(() => {
     const getReleaseData = async () => {
-      const releaseData = await getRelease(releaseId || "");
+      const releaseData = await getReleaseBySlug(releaseSlug || "");
       setRelease(releaseData);
     };
     getReleaseData();
-  }, [releaseId]);
+  }, [releaseSlug]);
 
   const convertDate = (date: string) => {
     const options: Intl.DateTimeFormatOptions = {
@@ -31,37 +37,38 @@ const AlbumPage: React.FC<AlbumPageProps> = ({ user, fetchUser }) => {
   };
 
   const handleGetCode = async () => {
-    if (!user) return;
-    if (releaseId === undefined) return;
-    const code = await getCode(releaseId || "");
+    if (!fanProfile) return;
+    if (releaseSlug === undefined) return;
+    const code = await getCode(releaseSlug || "");
     if (code) {
-      await removeCode(releaseId || "", code);
+      await removeCode(releaseSlug || "", code);
       setRelease({
         ...release,
         codes: release.codes.filter((c: string) => c !== code),
       });
-      await addCodeToFan(user.uid, releaseId, code);
-      fetchUser();
+      await addCodeToFan(fanProfile.uid, releaseSlug, code);
+      const fanData = await getFanDocument(fanProfile.uid);
+      setFanProfile(fanData);
     }
   };
 
   useEffect(() => {
-    if (releaseId === undefined) {
+    if (releaseSlug === undefined) {
       navigate("/");
     }
-  }, [releaseId]);
+  }, [releaseSlug]);
 
   useEffect(() => {
-    if (!user) return;
-    if (user.redeemed.length > 0) {
-      for (const release of user.redeemed) {
-        if (release.releaseId === releaseId) {
+    if (!fanProfile) return;
+    if (fanProfile.redeemed.length > 0) {
+      for (const release of fanProfile.redeemed) {
+        if (release.releaseSlug === releaseSlug) {
           setAlreadyRedeemed(true);
           break;
         }
       }
     }
-  }, [user, releaseId]);
+  }, [fanProfile, releaseSlug]);
 
   return (
     <div className="flex flex-col items-center min-h-[95vh] w-full">
@@ -90,7 +97,7 @@ const AlbumPage: React.FC<AlbumPageProps> = ({ user, fetchUser }) => {
       <div className="flex flex-row gap-10 mx-auto justify-center my-5">
         <div
           className={
-            user
+            fanProfile
               ? alreadyRedeemed || release?.codes.length === 0
                 ? "btn btn-primary btn-lg text-3xl btn-disabled"
                 : "btn btn-primary btn-lg text-3xl"
@@ -98,11 +105,11 @@ const AlbumPage: React.FC<AlbumPageProps> = ({ user, fetchUser }) => {
           }
           onClick={handleGetCode}
         >
-          {user
+          {fanProfile
             ? alreadyRedeemed
               ? "Already Redeemed!"
               : "Get Code!"
-            : "Login to redeem code!"}
+            : "Login to a fan account to redeem code!"}
         </div>
         <a
           className="btn btn-secondary btn-lg text-3xl"

@@ -13,8 +13,8 @@ export type ArtistProps = {
   uid: string;
   name: string;
   location: string;
-  releases: ReleaseProps[];
-  followers: FanProps[];
+  releases: [string];
+  followers: [string];
 };
 
 export type FanProps = {
