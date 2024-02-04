@@ -82,7 +82,7 @@ const App = () => {
   };
 
   return (
-    <div data-theme={theme} className="font-amatic">
+    <div data-theme={theme} className="font-amatic h-screen">
       <Header
         theme={theme}
         handleThemeChange={handleThemeChange}
