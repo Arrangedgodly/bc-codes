@@ -1,0 +1,90 @@
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	// Cloudflare Workers (Static Assets) — not Pages — per docs/ultron/research/R1-cloudflare-stack.md.
+	// Deploy: `npm run build` then `npx wrangler deploy` — full ordered procedure in
+	// docs/ultron/deploy-runbook.md (OP1); provisioning values via scripts/provision.sh.
+	"name": "bc-codes",
+	"main": ".svelte-kit/cloudflare/_worker.js",
+	"compatibility_date": "2026-08-01",
+	"compatibility_flags": ["nodejs_als"],
+	"assets": {
+		"directory": "./.svelte-kit/cloudflare",
+		"binding": "ASSETS"
+	},
+	// ── Production public URL (top level = production environment) ──────────
+	// TODO(OP1 / user, Path A — custom domain, recommended): once the zone for
+	// your domain is active in Cloudflare, uncomment and set your hostname.
+	// A Custom Domain auto-creates the DNS record + issues the SSL cert:
+	"routes": [{ "pattern": "codes.arrangedgodly.com", "custom_domain": true }],
+	// Setting routes automatically disables the *.workers.dev URL for this
+	// Worker (no duplicate public surface). Path B (no domain yet): leave
+	// commented — the Worker serves on bc-codes.<your-subdomain>.workers.dev.
+	//
+	// D1 — all correctness-bearing state (R1: KV disqualified for dispense).
+	// Local dev keys its miniflare store off this id — the all-zeros UUID is the
+	// original BE1 placeholder, so the seeded local DB keeps working until the
+	// real id is wired (scripts/provision.sh stage 3 replaces this exact string).
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_name": "bc-codes",
+			// (`npx wrangler d1 create bc-codes` — deploy-runbook §3).
+			"database_id": "00815762-c918-426f-8fd5-7334023c9a33",
+			"migrations_dir": "migrations"
+		}
+	],
+	// R2 bucket for og:image artwork cache — binding reserved per BE1, used from BE8 on.
+	// One bucket shared by both environments: the artwork cache is not
+	// correctness-bearing state (R1), so staging/prod sharing it is safe.
+	"r2_buckets": [
+		{
+			"binding": "ART",
+			"bucket_name": "bc-codes-art"
+		}
+	],
+	// Secrets (SESSION_SECRET, EMAIL_PEPPER, OTP_PEPPER) are never listed here:
+	// locally they come from .dev.vars (gitignored); in production via
+	// `wrangler secret put <NAME> [--env staging]` (deploy-runbook §4/§7).
+	// Typings for all of the above: src/app.d.ts.
+	//
+	// Mailer (BE3, committed R2): real mail on PRODUCTION via Resend — sender
+	// and driver as vars; the API key rides in as a Worker secret
+	// (`wrangler secret put RESEND_API_KEY`). Staging deliberately declares no
+	// vars: it keeps the console driver and can never send real email.
+	"vars": { "MAIL_FROM": "bc-codes <noreply@arrangedgodly.com>", "MAILER_DRIVER": "resend" },
+	//
+	// Staging environment — the disposable twin used by the deploy runbook's
+	// smoke checks (board load, OTP round-trip via the console mailer, and the
+	// QA1 250-burst re-run against a REAL remote D1, safely off production).
+	// Deploys as worker `bc-codes-staging` (wrangler appends the env name) on
+	// its own workers.dev URL. NOTE: binding arrays (d1_databases, r2_buckets)
+	// do NOT inherit into named environments — both are re-declared below, the
+	// R2 bucket intentionally shared with production (artwork cache is not
+	// correctness-bearing, R1). Intentionally NO mailer vars: staging keeps the
+	// console driver, so it can never send real email or burn Resend quota.
+	"env": {
+		"staging": {
+			"workers_dev": true,
+			// routes (unlike binding arrays) DO inherit into named environments —
+			// empty override keeps staging OFF the production custom domain.
+			"routes": [],
+			"d1_databases": [
+				{
+					"binding": "DB",
+					"database_name": "bc-codes-staging",
+					"database_id": "d62d833b-6d3c-4efb-b564-0c73b38ade18",
+					"migrations_dir": "migrations"
+				}
+			],
+			"r2_buckets": [
+				{
+					"binding": "ART",
+					"bucket_name": "bc-codes-art"
+				}
+			]
+		}
+	},
+	"observability": {
+		"enabled": true
+	}
+}

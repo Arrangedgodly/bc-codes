@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="text-scale" content="scale" />
+		<meta name="color-scheme" content="dark" />
+		<meta name="theme-color" content="#0a0a0a" />
+		<!-- paint the console ground before any CSS arrives: no white flash -->
+		<style>
+			html {
+				background: #0a0a0a;
+			}
+		</style>
+		%sveltekit.head%
+	</head>
+	<body data-sveltekit-preload-data="hover">
+		<div style="display: contents">%sveltekit.body%</div>
+	</body>
+</html>

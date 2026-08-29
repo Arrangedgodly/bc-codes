@@ -1,0 +1,380 @@
+/*
+	bc-codes — Crisis Wall design system (FE1)
+	Direction: user-chosen challenger "Crisis Wall" over the rolled Request Ledger, seed ac07c5ea.
+	The full direction contract lives as the first-child HTML comment of src/routes/+layout.svelte.
+
+	 ----------------------------------------------------------------------------
+	TOKENS — semantic tri-color on absolute black. Zero drift.
+	Ratios below computed for WCAG 2.1 relative luminance, verified 2026-08-28
+	(script over the exact token hex values):
+
+	  text pair                     on #0a0a0a   on #100d0b (panel)   on #060505 (inset)
+	  --text       #c9c2ba          11.23:1 AA   10.98:1 AA           11.54:1 AA
+	  --text-muted #8a857e           5.41:1 AA    5.29:1 AA            5.56:1 AA
+	  --text-micro #847f77           4.98:1 AA    4.87:1 AA            5.12:1 AA
+	                                 (QA3: the decorative JP layer's own tone —
+	                                 dimmer than muted, still AA on every ground,
+	                                 replacing the old opacity:0.72 dimming that
+	                                 computed to ~3.3:1 and failed axe)
+	  --orange     #ff5c1a           6.41:1 AA    6.27:1 AA            6.59:1 AA
+	  --orange-bright #ff7a3d        7.64:1 AA
+	  --green      #39d353          10.01:1 AA    9.79:1 AA           10.29:1 AA
+	  --alarm      #e8102a           4.28:1 AA-large only (>=24px, or >=18.66px bold);
+	                                 graphics/fills OK (>=3:1). NEVER small body text.
+	  --alarm-bright #ff3b4a         5.63:1 AA    5.51:1 AA            5.79:1 AA
+	  black on --orange (buttons)    6.41:1 AA
+	  black on --green  (chips)     10.01:1 AA
+	  --hairline   #5a2e14           1.73:1 — decorative boundaries only; never the sole
+	                                 indicator of state (labels and chips carry state too).
+
+	Materials: flat + glow only (no gradients as decoration, no skeuomorphic shadow).
+	Scanlines + hazard bands are this world's pinned textures (design-brief.md).
+	All animation is gated behind `prefers-reduced-motion: no-preference`.
+	 ----------------------------------------------------------------------------
+*/
+
+/* --- Faces (self-hosted, latin subset, OFL 1.1 — see src/lib/fonts/OFL-*.txt) --- */
+
+/* Anton — ultra-heavy condensed caps display. Haettenschweiler / Trade Gothic Bold
+   Condensed lineage: the title-card face of 90s mecha console graphics.
+   Source: Google Fonts (ofl/anton, v27 latin subset). License: OFL 1.1. */
+@font-face {
+	font-family: 'Anton';
+	font-style: normal;
+	font-weight: 400;
+	font-display: swap;
+	src: url('./lib/fonts/Anton-latin.woff2') format('woff2');
+	unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+		U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215,
+		U+FEFF, U+FFFD;
+}
+
+/* Martian Mono — engineered wide terminal grotesque (Evil Martians). At light
+   weights with tracking it is the command-console label voice; variable 100–800.
+   Source: Google Fonts (ofl/martianmono, v6 latin variable). License: OFL 1.1. */
+@font-face {
+	font-family: 'Martian Mono';
+	font-style: normal;
+	font-weight:100 800;
+	font-display: swap;
+	src: url('./lib/fonts/MartianMono-latin-var.woff2') format('woff2');
+	unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+		U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215,
+		U+FEFF, U+FFFD;
+}
+
+/* DSEG7 Classic Bold — the reference seven-segment face, built for numeric readouts.
+   Source: keshikan, npm:dseg 0.46.0 (fonts/DSEG7-Classic/DSEG7Classic-Bold.woff2).
+   License: OFL 1.1 (Reserved Font Name "DSEG"). */
+@font-face {
+	font-family: 'DSEG7 Classic';
+	font-style: normal;
+	font-weight: 700;
+	font-display: swap;
+	src: url('./lib/fonts/DSEG7Classic-Bold.woff2') format('woff2');
+}
+
+/* --- Tokens --- */
+
+:root {
+	/* ground */
+	--ink: #0a0a0a; /* absolute black — the void */
+	--panel: #100d0b; /* raised console panel (warm near-black) */
+	--panel-inset: #060505; /* recessed readout wells */
+
+	/* semantic tri-color */
+	--orange: #ff5c1a; /* phosphor orange — brand / structure / interactive */
+	--orange-bright: #ff7a3d; /* hover / active orange (7.64:1 on ink) */
+	--green: #39d353; /* nominal — available / claimed-yours */
+	--alarm: #e8102a; /* alarm red — drained / errors. Large text + fills ONLY */
+	--alarm-bright: #ff3b4a; /* small-text-safe alarm (5.63:1 on ink) */
+
+	/* warm gray text */
+	--text: #c9c2ba;
+	--text-muted: #8a857e;
+	--text-micro: #847f77; /* decorative JP layer — dim, still AA on all three grounds */
+
+	/* hairlines */
+	--hairline: #5a2e14; /* dim orange-brown boundary */
+	--hairline-dim: rgba(90, 46, 20, 0.55);
+	--hairline-green: rgba(57, 211, 83, 0.4);
+	--hairline-alarm: rgba(232, 16, 42, 0.45);
+
+	/* glow (phosphor bloom — flat + glow is the committed material) */
+	--glow-orange: 0 0 18px rgba(255, 92, 26, 0.35), 0 0 2px rgba(255, 92, 26, 0.6);
+	--glow-green: 0 0 16px rgba(57, 211, 83, 0.3), 0 0 2px rgba(57, 211, 83, 0.55);
+	--glow-alarm: 0 0 16px rgba(232, 16, 42, 0.35), 0 0 2px rgba(232, 16, 42, 0.6);
+
+	/* faces */
+	--font-display: 'Anton', 'Arial Narrow', 'Helvetica Neue', sans-serif;
+	--font-mono: 'Martian Mono', 'Courier New', monospace;
+	--font-seg: 'DSEG7 Classic', 'Martian Mono', monospace;
+
+	/* type scale */
+	--step--2: 0.625rem; /* 10px micro-labels */
+	--step--1: 0.75rem; /* 12px data */
+	--step-0: 0.875rem; /* 14px body */
+	--step-1: 1rem; /* 16px emphasis */
+	--step-2: 1.375rem; /* 22px section display */
+	--step-3: 1.75rem; /* 28px */
+	--step-4: 2.5rem; /* 40px */
+	--step-5: 3.5rem; /* 56px — near-monumental */
+	--step-6: 4.5rem; /* 72px display ceiling (6rem craft floor) */
+
+	/* tracking */
+	--track-caps: 0.18em; /* tracked mono caps — the label voice */
+	--track-wide: 0.32em; /* micro-label layer */
+
+	/* rhythm */
+	--gap-1: 0.25rem;
+	--gap-2: 0.5rem;
+	--gap-3: 0.75rem;
+	--gap-4: 1rem;
+	--gap-5: 1.5rem;
+	--gap-6: 2.5rem;
+	--gap-7: 4rem;
+
+	/* console geometry — sharp, machined */
+	--radius-0: 0;
+	--radius-1: 2px;
+
+	/* measure */
+	--measure: 68ch;
+}
+
+/* --- Reset --- */
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+* {
+	margin: 0;
+}
+
+html {
+	background: var(--ink);
+	-webkit-text-size-adjust: 100%;
+	text-size-adjust: 100%;
+}
+
+body {
+	min-height: 100dvh;
+	background:
+		/* CRT scanlines — the console's own texture, pinned by the brief;
+		   2.6% orange wash, contrast impact on --text < 0.05:1 */
+		repeating-linear-gradient(
+			0deg,
+			rgba(255, 92, 26, 0.026) 0 1px,
+			transparent 1px 3px
+		),
+		var(--ink);
+	color: var(--text);
+	font-family: var(--font-mono);
+	font-size: var(--step-0);
+	font-weight: 380;
+	line-height: 1.6;
+	font-synthesis: none;
+	-webkit-font-smoothing: antialiased;
+	text-rendering: optimizeLegibility;
+}
+
+img,
+svg,
+video {
+	display: block;
+	max-width: 100%;
+}
+
+input,
+button,
+textarea,
+select {
+	font: inherit;
+	color: inherit;
+}
+
+p {
+	max-width: var(--measure);
+}
+
+/* --- Browser surfaces (the parts we did not draw still carry the design) --- */
+
+::selection {
+	background: var(--orange);
+	color: var(--ink);
+}
+
+input,
+textarea {
+	caret-color: var(--orange);
+}
+
+:focus-visible {
+	outline: 2px solid var(--orange);
+	outline-offset: 3px;
+}
+
+a {
+	color: var(--orange);
+	text-decoration: underline;
+	text-decoration-thickness: 1px;
+	text-underline-offset: 0.22em;
+}
+
+a:hover {
+	color: var(--orange-bright);
+	text-decoration-color: var(--orange-bright);
+}
+
+/* scrollbars — dark rail, phosphor thumb */
+* {
+	scrollbar-width: thin;
+	scrollbar-color: var(--hairline) var(--ink);
+}
+
+::-webkit-scrollbar {
+	width: 10px;
+	height: 10px;
+}
+
+::-webkit-scrollbar-track {
+	background: var(--ink);
+}
+
+::-webkit-scrollbar-thumb {
+	background: var(--hairline);
+	border: 2px solid var(--ink);
+}
+
+::-webkit-scrollbar-thumb:hover {
+	background: var(--orange);
+}
+
+/* --- World materials (shared: frames, panels, buttons all draw these) --- */
+
+/* Corner brackets — 4 machined ticks via 8 background strokes, no extra DOM. */
+.brackets {
+	--bracket-len: 10px;
+	--bracket-stroke: 2px;
+	--bracket-color: var(--orange);
+
+	background-image:
+		linear-gradient(var(--bracket-color), var(--bracket-color)),
+		linear-gradient(var(--bracket-color), var(--bracket-color)),
+		linear-gradient(var(--bracket-color), var(--bracket-color)),
+		linear-gradient(var(--bracket-color), var(--bracket-color)),
+		linear-gradient(var(--bracket-color), var(--bracket-color)),
+		linear-gradient(var(--bracket-color), var(--bracket-color)),
+		linear-gradient(var(--bracket-color), var(--bracket-color)),
+		linear-gradient(var(--bracket-color), var(--bracket-color));
+	background-repeat: no-repeat;
+	background-size:
+		var(--bracket-len) var(--bracket-stroke),
+		var(--bracket-stroke) var(--bracket-len),
+		var(--bracket-len) var(--bracket-stroke),
+		var(--bracket-stroke) var(--bracket-len),
+		var(--bracket-len) var(--bracket-stroke),
+		var(--bracket-stroke) var(--bracket-len),
+		var(--bracket-len) var(--bracket-stroke),
+		var(--bracket-stroke) var(--bracket-len);
+	background-position:
+		0 0,
+		0 0,
+		100% 0,
+		100% 0,
+		100% 100%,
+		100% 100%,
+		0 100%,
+		0 100%;
+}
+
+/* Hazard band — chevron stripes. Dim orange when structural (frame rail),
+   alarm red when a pool is drained. The crawl animation is motion-gated below. */
+.hazard {
+	background: repeating-linear-gradient(
+		-45deg,
+		var(--hazard-color, var(--orange)) 0 10px,
+		transparent 10px 20px
+	);
+}
+
+/* --- Type voices --- */
+
+/* Display: ultra-heavy condensed caps. Titles carry their own weight — no kickers. */
+.display {
+	font-family: var(--font-display);
+	font-weight: 400;
+	text-transform: uppercase;
+	line-height: 0.94;
+	letter-spacing: 0.015em; /* condensed faces breathe with slight positive tracking */
+	color: var(--text);
+}
+
+/* Label: tracked mono caps — data and measurement, never costume */
+.label {
+	font-family: var(--font-mono);
+	font-size: var(--step--2);
+	font-weight: 460;
+	text-transform: uppercase;
+	letter-spacing: var(--track-caps);
+	line-height: 1.4;
+	color: var(--text-muted);
+}
+
+/* Micro-label: the bilingual decorative layer — always aria-hidden at usage.
+   QA3: dimming now lives in the token itself (--text-micro, AA-safe on every
+   ground); the former opacity:0.72 computed to ~3.3:1 on the inset well and
+   failed axe's color-contrast check even for decorative text. */
+.micro {
+	font-family: var(--font-mono);
+	font-size: var(--step--2);
+	font-weight: 340;
+	letter-spacing: var(--track-wide);
+	color: var(--text-micro);
+}
+
+/* --- Motion (single gated block; nothing animates for reduced-motion users) --- */
+
+@media (prefers-reduced-motion: no-preference) {
+	@keyframes chevron-crawl {
+		to {
+			background-position: 28.28px 0; /* one full period of the -45deg band */
+		}
+	}
+
+	@keyframes phosphor-pulse {
+		0%,
+		100% {
+			box-shadow: var(--glow-orange);
+		}
+		50% {
+			box-shadow:
+				0 0 26px rgba(255, 92, 26, 0.55),
+				0 0 3px rgba(255, 92, 26, 0.8);
+		}
+	}
+
+	@keyframes seg-tick {
+		/* seven-segment count changes land as one hard tick, CRT-style */
+		from {
+			transform: translateY(0.08em);
+			opacity: 0.2;
+		}
+		to {
+			transform: translateY(0);
+			opacity: 1;
+		}
+	}
+
+	.hazard--crawl {
+		animation: chevron-crawl 1.4s linear infinite;
+	}
+
+	.hazard--crawl-alarm {
+		--hazard-color: var(--alarm);
+		animation: chevron-crawl 0.9s linear infinite;
+	}
+}

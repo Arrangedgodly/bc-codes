@@ -1,0 +1,41 @@
+node_modules
+
+# Output
+.output
+.vercel
+.netlify
+.wrangler
+/.svelte-kit
+/build
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Env
+.env
+.env.*
+!.env.example
+!.env.test
+.dev.vars
+.dev.vars.*
+!.dev.vars.example
+
+# OP1 provisioning wizard output (Cloudflare/Resend values + generated prod
+# secrets — scripts/provision.sh writes it, docs/ultron/deploy-runbook.md reads it)
+.deploy.env
+
+# Vite
+vite.config.js.timestamp-*
+vite.config.ts.timestamp-*
+
+# Playwright E2E (QA2)
+/test-results/
+/playwright-report/
+
+# OP1 runbook: D1 production backups (contain claim data)
+/backups/
+
+# Internal build/process notes (kept local, not for the public repo)
+docs/ultron/
+.impeccable/

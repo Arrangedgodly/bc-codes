@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+  <!-- bc-codes favicon — the console's own readout: a seven-segment "b"
+       (product initial, DSEG7-style hexagonal segments) in phosphor orange
+       on the recessed-well black, with the two unlit segments held as the
+       10% ghost — the unlit display, the same idiom as the slab and bays.
+       Under 4KB so Vite inlines it as a data: URI (the documented CSP
+       img-src data: allowance). -->
+  <rect width="32" height="32" fill="#060505"/>
+  <rect x="0.5" y="0.5" width="31" height="31" fill="none" stroke="#2a180d"/>
+  <!-- unlit segments (a top, b upper-right) at ghost alpha -->
+  <g fill="#ff5c1a" fill-opacity="0.1">
+    <path d="M10.25 4.75 H20.75 L23 7 L20.75 9.25 H10.25 L8 7 Z"/>
+    <path d="M18.75 7 V13.75 L21 16 L23.25 13.75 V7 L21 4.75 Z"/>
+  </g>
+  <!-- lit segments: f (upper-left), g (middle), e (lower-left), c (lower-right), d (bottom) = "b" -->
+  <g fill="#ff5c1a">
+    <path d="M8.75 7 V13.75 L11 16 L13.25 13.75 V7 L11 4.75 Z"/>
+    <path d="M10.25 14.75 H20.75 L23 17 L20.75 19.25 H10.25 L8 17 Z"/>
+    <path d="M8.75 17 V24 L11 26.25 L13.25 24 V17 L11 14.75 Z"/>
+    <path d="M18.75 17 V24 L21 26.25 L23.25 24 V17 L21 14.75 Z"/>
+    <path d="M10.25 22.75 H20.75 L23 25 L20.75 27.25 H10.25 L8 25 Z"/>
+  </g>
+</svg>
