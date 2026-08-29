@@ -5,12 +5,12 @@ SESSION_SECRET=
 EMAIL_PEPPER=
 OTP_PEPPER=
 
-# Mailer (BE3, per committed R2). All optional — with none of these set the app
-# uses the console driver, which LOGS the OTP instead of sending it (no real
-# mail in dev/tests). To exercise the Resend adapter locally, set MAILER_DRIVER
-# and MAIL_FROM (a Resend-verified sender) plus the key. Production values are
-# wired at OP1: RESEND_API_KEY as a Worker secret; MAILER_DRIVER/MAIL_FROM as
-# wrangler.jsonc vars.
+# Mailer (BE3, per committed R2). wrangler.jsonc carries production vars
+# (MAILER_DRIVER=resend) and vite dev's platformProxy inherits them, so dev
+# MUST override back to the console driver — it LOGS the OTP instead of sending
+# it (no real mail in dev/tests). To exercise the Resend adapter locally
+# instead, set the driver + MAIL_FROM (a Resend-verified sender) plus the key.
+MAILER_DRIVER=console
 # MAILER_DRIVER=resend
 # MAIL_FROM=bc-codes <noreply@send.example.com>
 # RESEND_API_KEY=

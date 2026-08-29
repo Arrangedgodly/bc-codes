@@ -56,18 +56,22 @@ These are not aspirations; they are executable test invariants
 
 ## Develop locally
 
-Requires Node ≥ 24 and a Wrangler login for the local platform proxy.
+Requires Node ≥ 24.
 
 ```sh
 npm install
-cp .dev.vars.example .dev.vars
+cp .dev.vars.example .dev.vars   # then fill the three secrets with `openssl rand -hex 32`
 npm run db:migrate:local
 npm run db:seed
 npm run dev
 ```
 
-Fill `.dev.vars` with `openssl rand -hex 32` values first (the file lists what it needs).
 The seed lands a dogfooding project with demo codes so the board has something to show.
+
+> [!NOTE]
+> Local dev always uses the console mailer: it logs OTP codes to the terminal instead of
+> sending email. `.dev.vars.example` pins `MAILER_DRIVER=console` to override the production
+> mailer var that `vite dev` otherwise inherits from `wrangler.jsonc`.
 
 Useful scripts: `npm run check` (svelte-check), `npm run build` (adapter-cloudflare output
 into `.svelte-kit/cloudflare`), `npm run db:migrate` (remote D1).
@@ -75,31 +79,41 @@ into `.svelte-kit/cloudflare`), `npm run db:migrate` (remote D1).
 ## Testing
 
 ```sh
-npm test
-npm run test:e2e
+npm test          # 269 unit/integration tests
+npm run test:e2e  # 64 end-to-end tests
 ```
 
-- **269 unit/integration tests** — vitest running inside workerd against real D1, including
-  the invariant suite with seeded concurrent-burst races.
-- **64 end-to-end tests** — Playwright driving every journey (artist CSV → share link, fan
-  claim → redeem, my-codes on a new device, report → reissue, drained) at desktop **and**
-  mobile viewports, plus axe accessibility scans, keyboard/focus/reduced-motion journeys,
-  and CSP/header assertions. Requires a one-time `npx playwright install chromium`.
+- **Unit/integration** — vitest running inside workerd against real D1, including the
+  invariant suite with seeded concurrent-burst races.
+- **End-to-end** — Playwright drives every journey (artist CSV → share link, fan claim →
+  redeem, my-codes on a new device, report → reissue, drained) at desktop **and** mobile
+  viewports, plus axe accessibility scans, keyboard/focus/reduced-motion journeys, and
+  CSP/header assertions. The harness boots the real dev server against your local D1;
+  it needs a one-time `npx playwright install chromium`.
 
 ## Deploying
 
-Deliberately manual — no automation deploys this repo. Two artifacts, in order:
+> [!IMPORTANT]
+> Deploying is deliberately manual — no automation deploys this repo. Two artifacts, in order:
 
 1. [`scripts/provision.sh`](scripts/provision.sh) — an interactive wizard for the
    human-only steps: Cloudflare account + scoped API token, D1 databases, R2 bucket, Resend
    domain + send-only key, DNS records. Writes `.deploy.env` (gitignored).
 2. [`docs/ultron/deploy-runbook.md`](docs/ultron/deploy-runbook.md) — the ordered deploy:
-   staging first (with smoke checks and a safe production-grade burst re-run), then
-   production, custom domain, and email enablement.
+   staging first (smoke checks and a production-grade burst re-run), then production,
+   custom domain, and email enablement.
+
+## Troubleshooting
+
+- **`D1_ERROR: no such table: projects`** — the local D1 state is empty or keyed under an old
+  `database_id`. Run `npm run db:migrate:local` (then `npm run db:seed`).
+- **OTP requests return 500 in dev** — the mailer is pointed at a real provider without a
+  key. Keep `MAILER_DRIVER=console` in `.dev.vars`; the OTP is logged to the terminal.
+- **E2E global-setup times out waiting for the dev server** — the harness waits for `/` to
+  return 200, so this is usually one of the two issues above, or a stale process holding
+  port 5317.
 
 ## Documentation
 
 - [`PRODUCT.md`](PRODUCT.md) — users, purpose, capabilities, principles
 - [`DESIGN.md`](DESIGN.md) — the visual world, tokens, and design rules
-- [`docs/ultron/`](docs/ultron/) — plan, research records (stack, email, redemption
-  pipelining), and the deploy runbook
