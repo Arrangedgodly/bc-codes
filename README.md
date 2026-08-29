@@ -1,58 +1,105 @@
 # bc-codes
 
-Artists upload Bandcamp giveaway-code CSVs; the site dispenses one random code per
-verified fan — atomically, fairly, pipelined to Bandcamp's `/yum`. See `PRODUCT.md`
-and `docs/ultron/plan.md`.
+**One random Bandcamp download code per verified fan — atomically, fairly, no accounts.**
 
-## Stack
+Artists paste a Bandcamp giveaway CSV, get one shareable link, and stop hand-pasting codes
+into DMs and comment threads. Fans tap the link, verify an email once, and walk away with a
+working code and a one-click path to Bandcamp's redemption page.
 
-SvelteKit 2 + TypeScript on Cloudflare Workers (Static Assets, not Pages) + D1 +
-R2 (artwork cache, reserved) — decided in `docs/ultron/research/R1-cloudflare-stack.md`.
-Bindings and secrets are typed in `src/app.d.ts`.
+**Live:** <https://codes.arrangedgodly.com>
 
-## Developing
+![The bc-codes drop board](docs/screenshots/board.png)
+
+The interface is drawn as a command console in a state of calm emergency — every number on
+screen is a real pool count, every meter renders a true fraction, and a drained pool says
+drained. The design system and its rules are documented in [`DESIGN.md`](DESIGN.md).
+
+## Why it exists
+
+Pasting raw codes into comments means one greedy fan with a fast refresh can drain the whole
+batch in seconds, and honest fans leave empty-handed. bc-codes makes fairness the product:
+
+- **No code is ever dispensed twice**, including under concurrent claim bursts.
+- **One code per verified fan per project** — plus exactly one reissue if a code turns out dead.
+- **Paused and drained pools dispense nothing** — and say so honestly.
+
+These are not aspirations; they are executable test invariants
+([`tests/invariants.test.ts`](tests/invariants.test.ts)), verified against seeded
+250-concurrent-claim bursts on real D1.
+
+## The two sides
+
+| Fans | Artists |
+| --- | --- |
+| Board of live drops with real availability | Email-OTP sign-in, no passwords |
+| One code per verified email, re-shown on revisit | CSV → shareable link in about three minutes |
+| Copy button + deep link straight to Bandcamp `/yum` | Lenient CSV parser with dedupe + count feedback |
+| "My codes" page, works from any device | Draft / active / paused states, live stats, pause and resume |
+| Dead-code report → one replacement | Cover art auto-fetched from the album page, cached in R2 |
+
+![A claimed code on the seven-segment slab](docs/screenshots/claim.png)
+![The artist console dashboard](docs/screenshots/console.png)
+
+## Under the hood
+
+- **SvelteKit 2 + TypeScript** on **Cloudflare Workers** (Static Assets), with **D1** as the
+  single source of dispense truth and **R2** as the artwork cache.
+- **Resend** for OTP mail, behind a mailer port with a prepared Brevo fallback — provider
+  specifics never leave one file.
+- **Fan privacy by construction**: fan emails are stored hash-only (HMAC + server-side
+  pepper). There is no readable fan PII at rest.
+- **Accessibility as a floor, not a feature**: WCAG-AA contrast computed against the exact
+  token palette, keyboard-complete flows, `prefers-reduced-motion` fully honored, decorative
+  layers `aria-hidden` with the accessible truth alongside.
+- **Security posture**: two-tier CSP (nonce-based for pages, static for API), HSTS,
+  `X-Frame-Options: DENY`, no third-party scripts, secrets only via Workers secrets.
+
+## Develop locally
+
+Requires Node ≥ 24 and a Wrangler login for the local platform proxy.
 
 ```sh
 npm install
-cp .dev.vars.example .dev.vars   # then fill with `openssl rand -hex 32` values
-npm run db:migrate:local         # apply migrations/ to local D1 (.wrangler/state)
-npm run db:seed                  # idempotent dev seed (dogfooding project + demo codes)
-npm run dev                      # SvelteKit dev server; platform.env emulated via wrangler
+cp .dev.vars.example .dev.vars
+npm run db:migrate:local
+npm run db:seed
+npm run dev
 ```
 
-Useful scripts: `npm run check` (svelte-check), `npm run build` (adapter-cloudflare
-build into `.svelte-kit/cloudflare`), `npm run db:migrate` (remote production D1).
-Secrets are never committed: `.dev.vars` locally, `wrangler secret put` in
-production.
+Fill `.dev.vars` with `openssl rand -hex 32` values first (the file lists what it needs).
+The seed lands a dogfooding project with demo codes so the board has something to show.
 
-## Deploying (OP1)
-
-Two artifacts, in order — both yours to run (no automation deploys this repo):
-
-1. **`scripts/provision.sh`** — the provisioning wizard for the human-only
-   steps: Cloudflare account + scoped API token, `bc-codes` +
-   `bc-codes-staging` D1 databases, the `bc-codes-art` R2 bucket, Resend
-   account + sending domain + send-only API key, and the four Cloudflare DNS
-   records (SPF/DKIM/DMARC per `docs/ultron/research/R2-email-provider.md`).
-   Re-runnable; writes the captured values to `.deploy.env` (gitignored).
-2. **`docs/ultron/deploy-runbook.md`** — the ordered deploy: build, D1
-   migrations, Worker secrets (with generation commands), staging deploy +
-   smoke (board, console-OTP, and the safe QA1 250-burst re-run via
-   `scripts/burst-smoke.mjs` against real remote D1 — never against
-   production data), production deploy, custom domain + SSL, Resend mailer
-   enablement, and a post-deploy smoke checklist. Deploys are manual by
-   decision (runbook §11 has the rationale).
+Useful scripts: `npm run check` (svelte-check), `npm run build` (adapter-cloudflare output
+into `.svelte-kit/cloudflare`), `npm run db:migrate` (remote D1).
 
 ## Testing
 
-- `npm test` — 269 unit/integration tests (vitest inside workerd via
-  `@cloudflare/vitest-plugin`, against real D1; includes the QA1 invariant suite).
-- `npm run test:e2e` — the QA2 E2E happy-path journeys plus the QA3 a11y +
-  security scans (Playwright chromium, 64 tests): artist CSV → share link; fan
-  claim → slab → redeem; my-codes on a new device; report → reissue; drained;
-  axe + keyboard/focus/reduced-motion journeys; CSP + header posture. The
-  harness boots its own `vite dev` (local D1, port 5317), runs every journey at
-  1440×900 AND 390×844, twice each, and restores the dev D1 afterwards.
-  Requirements: Node ≥ 24 (`node:sqlite`), a one-time
-  `npx playwright install chromium`, and `.dev.vars` present. Lives in `e2e/`
-  (outside svelte-check/vitest scopes).
+```sh
+npm test
+npm run test:e2e
+```
+
+- **269 unit/integration tests** — vitest running inside workerd against real D1, including
+  the invariant suite with seeded concurrent-burst races.
+- **64 end-to-end tests** — Playwright driving every journey (artist CSV → share link, fan
+  claim → redeem, my-codes on a new device, report → reissue, drained) at desktop **and**
+  mobile viewports, plus axe accessibility scans, keyboard/focus/reduced-motion journeys,
+  and CSP/header assertions. Requires a one-time `npx playwright install chromium`.
+
+## Deploying
+
+Deliberately manual — no automation deploys this repo. Two artifacts, in order:
+
+1. [`scripts/provision.sh`](scripts/provision.sh) — an interactive wizard for the
+   human-only steps: Cloudflare account + scoped API token, D1 databases, R2 bucket, Resend
+   domain + send-only key, DNS records. Writes `.deploy.env` (gitignored).
+2. [`docs/ultron/deploy-runbook.md`](docs/ultron/deploy-runbook.md) — the ordered deploy:
+   staging first (with smoke checks and a safe production-grade burst re-run), then
+   production, custom domain, and email enablement.
+
+## Documentation
+
+- [`PRODUCT.md`](PRODUCT.md) — users, purpose, capabilities, principles
+- [`DESIGN.md`](DESIGN.md) — the visual world, tokens, and design rules
+- [`docs/ultron/`](docs/ultron/) — plan, research records (stack, email, redemption
+  pipelining), and the deploy runbook
